@@ -8,5 +8,5 @@ import doancnpm.models.Subject;
 
 public interface SubjectRepository extends JpaRepository<Subject, Long>{
 	Subject findBysubjectname(String subject);
-	
+
 }

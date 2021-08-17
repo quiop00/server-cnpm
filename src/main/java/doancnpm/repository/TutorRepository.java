@@ -23,6 +23,8 @@ public interface TutorRepository extends JpaRepository<Tutor, Long> {
 	List<Tutor> findById(Long tutorId);
 
 	List<Tutor> findByAddress(String address);
+	
+	List<Tutor> findByVerify(Boolean verify);
 
 	@Modifying
 	@Query("SELECT t FROM Tutor t INNER JOIN t.subjects s WHERE s IN (:subjects)")

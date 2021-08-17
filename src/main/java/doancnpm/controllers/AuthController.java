@@ -81,7 +81,10 @@ public class AuthController {
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
-
+		if(userDetails.getBlock())
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Tài khoản đã bị khóa"));
 		return ResponseEntity.ok(new JwtResponse(jwt, 
 												 userDetails.getId(), 
 												 userDetails.getUsername(), 
@@ -142,10 +145,10 @@ public class AuthController {
 		
 		user.setRoles(roles);	
 		user.setName(signUpRequest.getUsername());
+		user.setAvatar("https://storage.googleapis.com/tutor-a4d9d.appspot.com/c67a91c5-e28f-4084-af61-71f1f68ec184jpg");
 		userRepository.save(user);
 		if(strRoles.contains("tutor")){
 			Tutor tutor = new Tutor();
-			tutor.setAvatar("https://storage.googleapis.com/tutor-a4d9d.appspot.com/c67a91c5-e28f-4084-af61-71f1f68ec184jpg");
 			tutor.setUser(user);
 			tutorRepository.save(tutor);
 			//tutorService.save(addTutorRequest);
@@ -156,8 +159,6 @@ public class AuthController {
 			student.setUser(user);
 			studentRepository.save(student);
 		}
-		
-		
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 }

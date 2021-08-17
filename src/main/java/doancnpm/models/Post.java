@@ -11,6 +11,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +24,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
@@ -32,6 +35,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import doancnpm.enums.CandidateStatus;
+import doancnpm.enums.PostStatus;
+
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "post")
@@ -40,8 +46,6 @@ public class Post  {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "class_id")
-	private Integer classId;
 	@Column(name = "title")
 	private String title;
 
@@ -63,22 +67,45 @@ public class Post  {
 	@Size(max = 500)
 	private String schedule;
 	
-	@OneToMany(mappedBy = "post")
+	@Column(name = "verify")
+	private Boolean verify = false;
+	
+	@Transient 
+	private Boolean isExpire;
+	
+	@Enumerated(EnumType.STRING)
+	@Column
+	private PostStatus status;
+	
+	@OneToMany(mappedBy = "post",orphanRemoval=true,cascade = {CascadeType.ALL})
+	@JsonIgnoreProperties("post")
 	private Set<Candidate> candidates = new HashSet<>();
 	
-	public Integer getClassId() {
-		return classId;
-	}
+	@Column(name = "createdDate")
+	@CreatedDate
+	private Date createdDate;
 
-	public void setClassId(Integer classId) {
-		this.classId = classId;
-	}
+	@Column(name = "modifiedDate")
+	@LastModifiedDate
+	private Date modifiedDate;
+
+	@Column(name = "finishDate")
+	private Date finishDate;
 
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "post_subject", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	@JsonIgnoreProperties("posts")
 	private Set<Subject> subjects = new HashSet<>();
+	
+	@ManyToOne
+	@JoinColumn(name = "studentId")
+	@JsonIgnoreProperties("post")
+	private Student student;
+
+	@OneToMany(mappedBy = "post", cascade=CascadeType.REMOVE)
+	@JsonIgnoreProperties("post")
+	private List<Suggestion> suggestion = new ArrayList<>();
 	
 	public Grade getGrade() {
 		return grade;
@@ -107,16 +134,25 @@ public class Post  {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-
-	@ManyToOne
-	@JoinColumn(name = "studentId")
-	@JsonIgnoreProperties("post")
-	private Student student;
-
-	@OneToMany(mappedBy = "post", cascade=CascadeType.REMOVE)
-	@JsonIgnoreProperties("post")
-	private List<Suggestion> suggestion = new ArrayList<>();
+	public PostStatus checkStatus() {
+		if(getIsExpire())
+			return PostStatus.CLOSE;
+		if((candidates==null||candidates.isEmpty()))
+			return PostStatus.OPEN;
+		for(Candidate cd:candidates) {
+			if(cd.getStatus() == CandidateStatus.WAITING)
+				return PostStatus.CHOOSING;
+			if(cd.getStatus() == CandidateStatus.ACCEPT)
+				return PostStatus.CLOSE;
+		}
+		return PostStatus.OPEN;
+	}
+	public PostStatus getStatus() {
+		return status;
+	}
+	public void setStatus(PostStatus status) {
+		this.status = status;
+	}
 
 
 	public Student getStudent() {
@@ -126,14 +162,6 @@ public class Post  {
 	public void setStudent(Student student) {
 		this.student = student;
 	}
-
-	@Column(name = "createdDate")
-	@CreatedDate
-	private Date createdDate;
-
-	@Column(name = "modifiedDate")
-	@LastModifiedDate
-	private Date modifiedDate;
 
 	public Long getId() {
 		return id;
@@ -200,11 +228,41 @@ public class Post  {
 	}
 
 	public Set<Candidate> getCandidates() {
+
 		return candidates;
 	}
 
 	public void setCandidates(Set<Candidate> candidates) {
-		this.candidates = candidates;
+		this.candidates.addAll(candidates);
+	}
+
+	public Boolean getVerify() {
+		return verify;
+	}
+
+	public void setVerify(Boolean verify) {
+		this.verify = verify;
+	}
+
+	public Date getFinishDate() {
+		return finishDate;
+	}
+
+	public void setFinishDate(Date finishDate) {
+		this.finishDate = finishDate;
+	}
+
+	public Boolean getIsExpire() {
+		Date now = new Date();
+		if(now.after(getFinishDate())) {
+			setIsExpire(true);
+		}else
+			setIsExpire(false);
+		return isExpire;
+	}
+
+	public void setIsExpire(Boolean isExpire) {
+		this.isExpire = isExpire;
 	}
 	
 

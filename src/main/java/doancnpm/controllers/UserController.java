@@ -70,33 +70,6 @@ public class UserController {
 		return response;
 	}
 	
-//	@GetMapping(value = "/user/profile")
-//	@PreAuthorize("hasRole('TUTOR') or hasRole('STUDENT')")
-//	public UserOutPut getUser(HttpServletRequest request){
-//		String jwt = parseJwt(request);
-//		String username = "";
-//		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-//			username = jwtUtils.getUserNameFromJwtToken(jwt);
-//		}
-//		User user = userService.getUser(username);
-//		
-//		UserOutput userOutPut = new UserOutPut();
-//		userOutPut.setId(user.getId());
-//		userOutPut.setEmail(user.getEmail());
-//		userOutPut.setPassword(user.getPassword());
-//		userOutPut.setName(user.getName());
-//		userOutPut.setPhonenumber(user.getPhonenumber());
-//		userOutPut.setAge(user.getAge());
-//		userOutPut.setGender(user.getGender());
-//		userOutPut.setUsername(user.getUsername());
-//		Set<Role> roles = user.getRoles();
-//		List<String> rols = new ArrayList<String>(); 
-//		for(Role role : roles)
-//			rols.add(role.getName().name());	
-//		userOutPut.setRoles(rols);
-//		return userOutPut;
-//	}
-	
 	@GetMapping("/user/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
@@ -129,42 +102,7 @@ public class UserController {
 	public void deleteUser(@RequestBody long[] ids) {
 		userService.delete(ids);
 	}
-	
-	
-//	@GetMapping("/user/password")
-//	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT') or hasRole('TUTOR')")
-//	public String checkPassword(HttpServletRequest request,@RequestBody PasswordRequest model) {
-//		String jwt = parseJwt(request);
-//		String username = "";
-//		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-//			username = jwtUtils.getUserNameFromJwtToken(jwt);
-//		}
-//		
-//		String password = userService.getPassword(username);
-//		
-//		String message="";
-//		if(encoder.matches(model.getPassword(), password)) 
-//			message = "Password is right";
-//		else
-//			message = "Password is wrong";
-//		
-//		
-//		return message;
-//	}
-	
-//	@PutMapping("/user/password")
-//	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT') or hasRole('TUTOR')")
-//	public String changePassword(HttpServletRequest request, @RequestBody PasswordRequest model ) {
-//
-//		String jwt = parseJwt(request);
-//		String username = "";
-//		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-//			username = jwtUtils.getUserNameFromJwtToken(jwt);
-//		}
-//		
-//		userService.save_password(username, model);
-//		return "Update password is success";
-//	}
+
 	@PutMapping("/user/password")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT') or hasRole('TUTOR')")
 	public MessageResponse changePassword(HttpServletRequest request, @RequestBody PasswordRequest model ) {

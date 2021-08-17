@@ -37,9 +37,6 @@ public class Tutor implements Serializable {
 	@Column(name = "qualification")
 	private String qualification;
 
-	@Column(name = "avatar")
-	private String avatar;
-
 	@Column(name = "rating")
 	private String rating;
 
@@ -48,6 +45,57 @@ public class Tutor implements Serializable {
 
 	@Column(name = "address")
 	private String address;
+	
+	@Column(name = "verify")
+	private Boolean verify = false;
+	
+	private Boolean isCompleted = false;
+	
+	@Column(name ="certificate", nullable = true)
+	private String certificate;
+	
+	@Column(name = "CMND",nullable = true)
+	private String cmnd;
+
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	@JsonIgnoreProperties("tutor")
+	private User user;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "tutor_subject", joinColumns = @JoinColumn(name = "tutor_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
+	@JsonIgnoreProperties("tutors")
+	private Set<Subject> subjects = new HashSet<>();
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "tutor_grade", joinColumns = @JoinColumn(name = "tutor_id"), inverseJoinColumns = @JoinColumn(name = "grade_id"))
+	@JsonIgnoreProperties("tutors")
+	private Set<Grade> grades = new HashSet<>();
+
+	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("tutor")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Comment> comments = new ArrayList<>();
+
+	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("tutor")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<TakenClass> classes = new ArrayList<>();
+
+	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("tutor")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Invitation> invitations = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("tutor")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Rate> rates = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "tutor", cascade=CascadeType.REMOVE)
+	@JsonIgnoreProperties("tutor")
+	private List<Suggestion> suggestion = new ArrayList<>();
 	
 	public String getCertificate() {
 		return certificate;
@@ -72,54 +120,6 @@ public class Tutor implements Serializable {
 	public void setRates(List<Rate> rates) {
 		this.rates = rates;
 	}
-
-	@Column(name ="certificate", nullable = true)
-	private String certificate;
-	@Column(name = "CMND",nullable = true)
-	private String cmnd;
-
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	@JsonIgnoreProperties("tutor")
-	private User user;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "tutor_subject", joinColumns = @JoinColumn(name = "tutor_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
-	@JsonIgnoreProperties("tutors")
-	private Set<Subject> subjects = new HashSet<>();
-
-//	@ManyToOne
-//	@JoinColumn(name="subjectId")
-//	@JsonIgnoreProperties("tutors")
-//	private Subject subject; 
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "tutor_grade", joinColumns = @JoinColumn(name = "tutor_id"), inverseJoinColumns = @JoinColumn(name = "grade_id"))
-	@JsonIgnoreProperties("tutors")
-	private Set<Grade> grades = new HashSet<>();
-
-	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("tutor")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Comment> comments = new ArrayList<>();
-
-	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("tutor")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Invitation> invitations = new ArrayList<>();
-	
-	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("tutor")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Rate> rates = new ArrayList<>();
-	
-//	@Column(name = "sang_2")
-//	private boolean sang_2 = false;
-//	@Column(name = "chieu_2")
-//	private boolean chieu_2 = false;
-//	@Column(name = "toi_2")
-//	private boolean toi_2 = false;
 
 	@Column(name="schedule")
 	@Size(max = 500)
@@ -155,14 +155,6 @@ public class Tutor implements Serializable {
 
 	public void setQualification(String qualification) {
 		this.qualification = qualification;
-	}
-
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
 	}
 
 	public String getDescription() {
@@ -221,10 +213,6 @@ public class Tutor implements Serializable {
 		this.invitations = invitations;
 	}
 
-	@OneToMany(mappedBy = "tutor", cascade=CascadeType.REMOVE)
-	@JsonIgnoreProperties("tutor")
-	private List<Suggestion> suggestion = new ArrayList<>();
-
 	public List<Suggestion> getSuggestion() {
 		return suggestion;
 	}
@@ -233,4 +221,31 @@ public class Tutor implements Serializable {
 		this.suggestion = suggestion;
 	}
 
+	public Boolean getVerify() {
+		return verify;
+	}
+
+	public void setVerify(Boolean verify) {
+		this.verify = verify;
+	}
+
+	public Boolean getIsCompleted() {
+		if(this.address !=null && this.cmnd !=null && !this.grades.isEmpty() && this.qualification != null 
+				&&!this.subjects.isEmpty() && this.schedule != null && this.user.checkComplete())
+			isCompleted = true;
+		return isCompleted;
+	}
+
+	public void setIsCompleted(Boolean isCompleted) {
+		this.isCompleted = isCompleted;
+	}
+
+	public List<TakenClass> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(List<TakenClass> classes) {
+		this.classes = classes;
+	}
+	
 }

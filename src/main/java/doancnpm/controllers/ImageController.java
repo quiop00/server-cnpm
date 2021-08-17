@@ -56,7 +56,7 @@ public class ImageController {
             String imageUrl = imageService.getImageUrl(fileName);
             System.out.println(imageUrl);
             // do whatever you want with that
-            tutor.setAvatar(imageUrl);
+            tutor.getUser().setAvatar(imageUrl);
             tutorRepository.save(tutor);
             imageUpload.setPath(imageUrl);
         } catch (Exception e) {

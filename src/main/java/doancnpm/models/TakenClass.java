@@ -6,9 +6,14 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import doancnpm.enums.ClassStatus;
+
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "taken_class")
 public class TakenClass {
 	@Id
@@ -24,18 +29,26 @@ public class TakenClass {
 	@Size(max = 500)
 	private String schedule;
 	
+	@Column(name ="address")
+	private String address;
+	
 	@ManyToOne
 	@JoinColumn(name = "id_student")
 	@JsonIgnoreProperties("classes")
 	private Student student;
+	
+	@ManyToOne
+	@JoinColumn(name ="id_grade")
+	private Grade grade;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "class_subject", joinColumns = @JoinColumn(name = "class_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	@JsonIgnoreProperties("classes")
 	private Set<Subject> subjects = new HashSet<>();
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
-	private Integer status = 1;
+	private ClassStatus status = ClassStatus.TEACHING;
 
 	public Long getId() {
 		return id;
@@ -77,12 +90,28 @@ public class TakenClass {
 		this.subjects = subjects;
 	}
 
-	public Integer getStatus() {
+	public ClassStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(ClassStatus status) {
 		this.status = status;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public Grade getGrade() {
+		return grade;
+	}
+
+	public void setGrade(Grade grade) {
+		this.grade = grade;
 	}
 	
 

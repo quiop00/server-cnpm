@@ -44,6 +44,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import doancnpm.converter.TutorConverter;
+import doancnpm.models.ERole;
 import doancnpm.models.Grade;
 import doancnpm.models.Subject;
 import doancnpm.models.Suggestion;
@@ -132,55 +134,20 @@ public class TutorController {
 	}	
 	
 	@GetMapping("/api/tutor/profile")
-	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
+	@PreAuthorize("hasRole('TUTOR')")
 	public ResponseEntity<TutorOutput> getTutor(HttpServletRequest request) {
 		String jwt = parseJwt(request);
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}	
-		
+		User user = userRepository.findOneByusername(username);
 		Tutor tutorData = tutorService.findTutor(username);
 		
-		String schedule = tutorData.getSchedule();
-		TutorOutput tutorOutput = new TutorOutput();
-		tutorOutput.setId(tutorData.getId());
-		tutorOutput.setIdUser(tutorData.getUser().getId());
-		tutorOutput.setQualification(tutorData.getQualification());
-		tutorOutput.setAvatar(tutorData.getAvatar());
-		tutorOutput.setRating(tutorData.getRating());
-		tutorOutput.setDescription(tutorData.getDescription());
-		tutorOutput.setAddress(tutorData.getAddress());
-		tutorOutput.setName(tutorData.getUser().getName());
+		TutorOutput tutorOutput = TutorConverter.modelToResponse(tutorData);
+		tutorOutput.setCmnd(tutorData.getCmnd());
 		tutorOutput.setPhonenumber(tutorData.getUser().getPhonenumber());
-		tutorOutput.setAge(tutorData.getUser().getAge());
-		tutorOutput.setGender(tutorData.getUser().getGender());
-		Set<Grade> setGrades = tutorData.getGrades();
-		Set<String> grades = new HashSet<String>();
-		for(Grade grade : setGrades) {
-			grades.add(grade.getGradename());
-		}
-		tutorOutput.setGrade(grades);
-		
-		Set<Subject> setSubjects = tutorData.getSubjects();
-		Set<String> subjects = new HashSet<String>();
-		for(Subject subject : setSubjects ) {
-			subjects.add(subject.getSubjectname());
-		}
-		tutorOutput.setSubject(subjects);
-
-		if (schedule != null) {
-			// tutorOutput.setSchedule(jsonObject);
-			try {
-				Map<String, Boolean> schedules = new ObjectMapper().readValue(schedule, HashMap.class);
-				System.out.println(schedules);
-				tutorOutput.setSchedules(schedules);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
+	
 		if (tutorData != null) {
 			return new ResponseEntity<>(tutorOutput, HttpStatus.OK);
 		} else {
@@ -193,45 +160,8 @@ public class TutorController {
 	public ResponseEntity<TutorOutput> getTutorById(@PathVariable("id") long id) {
 		Tutor tutorData = tutorService.findTutorById(id);
 		
-		String schedule = tutorData.getSchedule();
-		TutorOutput tutorOutput = new TutorOutput();
-		tutorOutput.setId(tutorData.getId());
-		tutorOutput.setIdUser(tutorData.getUser().getId());
-		tutorOutput.setQualification(tutorData.getQualification());
-		tutorOutput.setAvatar(tutorData.getAvatar());
-		tutorOutput.setRating(tutorData.getRating());
-		tutorOutput.setDescription(tutorData.getDescription());
-		tutorOutput.setAddress(tutorData.getAddress());
-		tutorOutput.setName(tutorData.getUser().getName());
-		tutorOutput.setAge(tutorData.getUser().getAge());
-		tutorOutput.setGender(tutorData.getUser().getGender());
-		tutorOutput.setPhonenumber(tutorData.getUser().getPhonenumber());
+		TutorOutput tutorOutput = TutorConverter.modelToResponse(tutorData);
 		
-		Set<Grade> setGrades = tutorData.getGrades();
-		Set<String> grades = new HashSet<String>();
-		for(Grade grade : setGrades) {
-			grades.add(grade.getGradename());
-		}
-		tutorOutput.setGrade(grades);
-		
-		Set<Subject> setSubjects = tutorData.getSubjects();
-		Set<String> subjects = new HashSet<String>();
-		for(Subject subject : setSubjects ) {
-			subjects.add(subject.getSubjectname());
-		}
-		tutorOutput.setSubject(subjects);
-
-		if (schedule != null) {
-			// tutorOutput.setSchedule(jsonObject);
-			try {
-				Map<String, Boolean> schedules = new ObjectMapper().readValue(schedule, HashMap.class);
-				System.out.println(schedules);
-				tutorOutput.setSchedules(schedules);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		
 		if (tutorData != null) {
 			return new ResponseEntity<>(tutorOutput, HttpStatus.OK);
@@ -245,67 +175,15 @@ public class TutorController {
 	
 	public Map<String, List<TutorOutput>> showTutor() {
 
-		System.out.println("ok");
-		List<Tutor> tutors = tutorService.findAll();
+		List<Tutor> tutors = tutorService.getTutorsByVerify(true);
 		List<TutorOutput> tutorOutputs = new ArrayList<TutorOutput>();
-		for (int i = 0; i < tutors.size(); i++)
-		if(tutors.get(i).getQualification() != null){
-
-			String schedule = tutors.get(i).getSchedule();
-			// JSONObject jsonObject= new JSONObject(schedule );
-
+		for (int i = 0; i < tutors.size(); i++) {
 			TutorOutput tutorOutput = new TutorOutput();
-			tutorOutput.setId(tutors.get(i).getId());
-			tutorOutput.setIdUser(tutors.get(i).getUser().getId());
-			tutorOutput.setQualification(tutors.get(i).getQualification());
-			tutorOutput.setAvatar(tutors.get(i).getAvatar());
-			tutorOutput.setRating(tutors.get(i).getRating());
-			tutorOutput.setDescription(tutors.get(i).getDescription());
-			tutorOutput.setAddress(tutors.get(i).getAddress());
-			tutorOutput.setName(tutors.get(i).getUser().getName());
-			tutorOutput.setPhonenumber(tutors.get(i).getUser().getPhonenumber());
-			tutorOutput.setAge(tutors.get(i).getUser().getAge());
-			tutorOutput.setGender(tutors.get(i).getUser().getGender());
-			Set<Grade> setGrades = tutors.get(i).getGrades();
-			Set<String> grades = new HashSet<String>();
-			for(Grade grade : setGrades) {
-				grades.add(grade.getGradename());
-			}
-			tutorOutput.setGrade(grades);
-			
-			Set<Subject> setSubjects = tutors.get(i).getSubjects();
-			Set<String> subjects = new HashSet<String>();
-			for(Subject subject : setSubjects ) {
-				subjects.add(subject.getSubjectname());
-			}
-			tutorOutput.setSubject(subjects);
-			
-			if (schedule != null) {
-				// tutorOutput.setSchedule(jsonObject);
-				try {
-					Map<String, Boolean> schedules = new ObjectMapper().readValue(schedule, HashMap.class);
-					System.out.println(schedules);
-					tutorOutput.setSchedules(schedules);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
+			tutorOutput = TutorConverter.modelToResponse(tutors.get(i));
 			tutorOutputs.add(tutorOutput);
-
 		}
-
 		Map<String, List<TutorOutput>> response = new HashMap<String, List<TutorOutput>>();
-
 		response.put("tutors", tutorOutputs);
-//		//return ResponseEntity.ok(response);
-//		Gson gson=new Gson();
-//		
-//		String data=gson.toJson(tutors);
-//		System.out.println("Hehe"+data);
-//		return null;
-
 		return response;
 
 	}
@@ -334,7 +212,10 @@ public class TutorController {
 //		
 //	}
 
-	@PutMapping(value = "/api/tutor")
+	/*
+	 * ---------------------------------UPDATE TUTOR PROFILE------------------------------------------
+	 */
+	@PutMapping(value = "/api/tutor/profile")
 	@PreAuthorize("hasRole('TUTOR')")
 	public String updateTutor(HttpServletRequest request, @RequestBody AddTutorRequest model) {
 
@@ -348,6 +229,10 @@ public class TutorController {
 		return message;
 	}
 
+	/*
+	 * -------------------------------------------------------------------------------------------------
+	 */
+	
 	@DeleteMapping(value = "/api/tutor")
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteUser(@RequestBody long[] ids) {
@@ -389,10 +274,8 @@ public class TutorController {
 			tutorOutput.setId(tutors.get(i).getId());
 			tutorOutput.setName(tutors.get(i).getUser().getName());
 			tutorOutput.setPhonenumber(tutors.get(i).getUser().getPhonenumber());
-			;
 			tutorOutput.setQualification(tutors.get(i).getQualification());
-			;
-			tutorOutput.setAvatar(tutors.get(i).getAvatar());
+			tutorOutput.setAvatar(tutors.get(i).getUser().getAvatar());
 			tutorOutput.setRating(tutors.get(i).getRating());
 			tutorOutput.setDescription(tutors.get(i).getDescription());
 			tutorOutput.setAddress(tutors.get(i).getAddress());

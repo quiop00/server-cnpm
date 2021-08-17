@@ -13,7 +13,6 @@ import doancnpm.models.User;
 
 public class TutorOutput {
 	private Long id;
-	private Long idUser;
 	private String name;
 	private String phonenumber;
 	private Long age;
@@ -23,17 +22,15 @@ public class TutorOutput {
 	private String rating;
 	private String description;
 	private String address;
+	private String cmnd;
+	private Boolean verify;
+	private Boolean block;
+	private Boolean isCompleteProfile;
+	
 	@JsonIgnoreProperties("tutors")
 	private Set<String> subject;
 	private Set<String> grade;
-
 	
-	public Long getIdUser() {
-		return idUser;
-	}
-	public void setIdUser(Long idUser) {
-		this.idUser = idUser;
-	}
 	private Map<String,Boolean> schedules;
 	
 	public Map<String, Boolean> getSchedules() {
@@ -120,6 +117,30 @@ public class TutorOutput {
 	}
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
+	}
+	public String getCmnd() {
+		return cmnd;
+	}
+	public void setCmnd(String cmnd) {
+		this.cmnd = cmnd;
+	}
+	public Boolean getVerify() {
+		return verify;
+	}
+	public void setVerify(Boolean verify) {
+		this.verify = verify;
+	}
+	public Boolean getBlock() {
+		return block;
+	}
+	public void setBlock(Boolean block) {
+		this.block = block;
+	}
+	public Boolean getIsComplete() {
+		return isCompleteProfile;
+	}
+	public void setIsComplete(Boolean isComplete) {
+		this.isCompleteProfile = isComplete;
 	}
 	
 }

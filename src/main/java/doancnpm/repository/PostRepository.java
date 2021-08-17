@@ -8,12 +8,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import doancnpm.enums.PostStatus;
 import doancnpm.models.Post;
 import doancnpm.models.Subject;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-	List<Post> findByGrade_id(int grade_id);
+	List<Post> findByGrade_id(long grade_id);
 
 	List<Post> findByAddress(String address);
 	
@@ -34,5 +35,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	Optional<Post> findByStudentId(long Id);
 
 	List<Post> findById(Long postId);
+	
+	List<Post> findByVerify(Boolean verify);
 
+	List<Post> findByStatus(PostStatus choosing);
 }

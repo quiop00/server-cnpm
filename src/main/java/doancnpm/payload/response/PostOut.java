@@ -5,6 +5,8 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import doancnpm.models.Candidate;
+
 public class PostOut {
 	private Long id;
 	private Long idStudent;
@@ -18,7 +20,10 @@ public class PostOut {
 	private String address;
 	private String description;
 	private Map<String, Boolean> schedules;
-
+	private Set<CandidateResponse> candidates;
+	private String finishDate;
+	private Boolean isExpire;
+	private String status;
 	public Long getIdStudent() {
 		return idStudent;
 	}
@@ -99,4 +104,37 @@ public class PostOut {
 	public void setSchedules(Map<String, Boolean> schedules) {
 		this.schedules = schedules;
 	}
+
+	public Set<CandidateResponse> getCandidates() {
+		return candidates;
+	}
+
+	public void setCandidates(Set<CandidateResponse> candidates) {
+		this.candidates = candidates;
+	}
+
+	public String getFinishDate() {
+		return finishDate;
+	}
+
+	public void setFinishDate(String finishDate) {
+		this.finishDate = finishDate;
+	}
+
+	public Boolean getIsExpire() {
+		return isExpire;
+	}
+
+	public void setIsExpire(Boolean isExpire) {
+		this.isExpire = isExpire;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 }

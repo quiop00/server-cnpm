@@ -3,16 +3,7 @@ package doancnpm.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -32,6 +23,8 @@ public class Student {
 	@JsonIgnoreProperties("student")
     private User user;
 
+	@Column(name = "post_count")
+	private Integer postCount = 0;
 	
 	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade=CascadeType.REMOVE)
 	@JsonIgnoreProperties("student")
@@ -54,13 +47,10 @@ public class Student {
 	@JsonIgnoreProperties("student")
 	private List<Post> post = new ArrayList<>();
 	
-	public List<Comment> getComments() {
-		return comments;
-	}
+	@OneToMany(mappedBy = "student", cascade=CascadeType.REMOVE)
+	@JsonIgnoreProperties("student")
+	private List<TakenClass> classes = new ArrayList<>();
 
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}	
 	
 	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("student")
@@ -105,6 +95,30 @@ public class Student {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Integer getPostCount() {
+		return postCount;
+	}
+
+	public void setPostCount(Integer postCount) {
+		this.postCount = postCount;
+	}
+
+	public List<Rate> getRates() {
+		return rates;
+	}
+
+	public void setRates(List<Rate> rates) {
+		this.rates = rates;
+	}
+
+	public List<TakenClass> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(List<TakenClass> classes) {
+		this.classes = classes;
 	}
 	
 	
