@@ -1,7 +1,10 @@
 package doancnpm.models;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,18 +14,22 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "comments")
 public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
 	@Column(name = "star", nullable = true)
-	private Double star;
+	private Long star;
 	
 	@Column(name = "content")
 	private String content;
@@ -39,6 +46,13 @@ public class Comment {
 	@JsonIgnoreProperties("comments")
 	private Tutor tutor;
 	
+	@Column(name = "createdDate")
+	@CreatedDate
+	private Date createdDate;
+
+	@Column(name = "modifiedDate")
+	@LastModifiedDate
+	private Date modifiedDate;
 
 	public Student getStudent() {
 		return student;
@@ -56,11 +70,11 @@ public class Comment {
 		this.tutor = tutor;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -71,4 +85,29 @@ public class Comment {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	public Long getStar() {
+		return star;
+	}
+
+	public void setStar(Long star) {
+		this.star = star;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+	
 }

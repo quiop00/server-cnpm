@@ -1,5 +1,6 @@
 package doancnpm.security.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import doancnpm.converter.UserConverter;
 import doancnpm.models.Admin;
+import doancnpm.models.ERole;
 import doancnpm.models.User;
 import doancnpm.payload.request.AddUserRequest;
 import doancnpm.payload.request.PasswordRequest;
@@ -54,7 +56,7 @@ public class UserService implements IUserService{
 		List<User> users = userRepository.findAll();
 		return users;
 	}
-
+	
 
 	@Override
 	public User getUserById(long id) {
@@ -113,5 +115,8 @@ public class UserService implements IUserService{
 		User user = userRepository.findOneByusername(username);
 		return user.getPassword();
 	}
+
+
+
 	
 }

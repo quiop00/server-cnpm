@@ -8,19 +8,11 @@ public class UserResponse {
 	private Long id;
 	private String username;
 	private String email;
-	private String password;
 	private String name;
 	private Long age;
 	private Long gender;
 	private String phonenumber;
-	private Boolean verify;
 	private Boolean block;
-	public Boolean getVerify() {
-		return verify;
-	}
-	public void setVerify(Boolean verify) {
-		this.verify = verify;
-	}
 	public Boolean getBlock() {
 		return block;
 	}
@@ -45,12 +37,6 @@ public class UserResponse {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	public String getName() {
 		return name;

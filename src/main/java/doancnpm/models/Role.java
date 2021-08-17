@@ -20,7 +20,11 @@ public class Role {
 	private ERole name;
 
 	
-	@ManyToMany(mappedBy = "roles")
+	@ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+                },mappedBy = "roles")
 	@JsonIgnoreProperties("roles")
 	private List<User> users = new ArrayList<>();
 	

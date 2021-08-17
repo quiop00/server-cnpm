@@ -1,7 +1,7 @@
 package doancnpm.payload.response;
 
 public class CommentResponse {
-	private Integer id;
+	private Long id;
 	private Long idStudent;
 	private String nameStudent;
 	private Long idTutor;
@@ -23,11 +23,10 @@ public class CommentResponse {
 	public String getContent() {
 		return content;
 	}
-	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public void setIdStudent(Long idStudent) {

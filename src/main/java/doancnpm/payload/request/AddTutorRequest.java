@@ -8,20 +8,17 @@ import java.util.Map;
 import java.util.Set;
 
 public class AddTutorRequest {
-	private Long id;
 	private String phonenumber;
 	private Long age;
 	private String name;
 	private Long gender;
 	private String qualification;
-//	private String avatar;
+	private String certificate;
+	private String cmnd;
 	private String description;
 	private Set<String> subject;
 	private Set<String> grade;
 	private String address;
-//	private Set<String> teachingDate;
-	private String username;
-	private String rating;
 	private Map<String,Boolean> schedules;
 	
 	
@@ -50,18 +47,6 @@ public class AddTutorRequest {
 	public void setGender(Long gender) {
 		this.gender = gender;
 	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-
-	
-	public Long getId() {
-		return id;
-	}
 	
 	public Set<String> getSubject() {
 		return subject;
@@ -75,19 +60,6 @@ public class AddTutorRequest {
 	public void setSchedules(Map<String, Boolean> schedules) {
 		this.schedules = schedules;
 	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public String getRating() {
-		return rating;
-	}
-	public void setRating(String rating) {
-		this.rating = rating;
-	}
-
-	
-	
 	public String getQualification() {
 		return qualification;
 	}
@@ -115,5 +87,17 @@ public class AddTutorRequest {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
+	public String getCertificate() {
+		return certificate;
+	}
+	public void setCertificate(String certificate) {
+		this.certificate = certificate;
+	}
+	public String getCmnd() {
+		return cmnd;
+	}
+	public void setCmnd(String cmnd) {
+		this.cmnd = cmnd;
+	}
+	
 }

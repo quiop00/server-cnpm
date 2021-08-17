@@ -35,14 +35,16 @@ public class JwtUtils {
 	}
 
 	public String getUserNameFromJwtToken(String token) {
-		
 		System.out.println(Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("role"));
 		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
 	}
 
 	public boolean validateJwtToken(String authToken) {
+		System.out.println("---------------no0--------");
 		try {
+			System.out.println("---------------no1--------");
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+			System.out.println("---------------no12--------");
 			return true;
 		} catch (SignatureException e) {
 			logger.error("Invalid JWT signature: {}", e.getMessage());

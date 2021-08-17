@@ -62,7 +62,7 @@ public class SuggestionController {
 			suggestionResponse.setPhoneNumberTutor(suggestions.get(i).getTutor().getUser().getPhonenumber());
 			suggestionResponse.setNameStudent(suggestions.get(i).getStudent().getUser().getName());
 			suggestionResponse.setPhoneNumberStudent(suggestions.get(i).getStudent().getUser().getPhonenumber());
-			suggestionResponse.setAvatar(suggestions.get(i).getTutor().getAvatar());
+			suggestionResponse.setAvatar(suggestions.get(i).getTutor().getUser().getAvatar());
 			suggestionResponse.setIdStudent(suggestions.get(i).getStudent().getId());
 			suggestionResponse.setIdTutor(suggestions.get(i).getTutor().getId());
 			
@@ -149,7 +149,7 @@ public class SuggestionController {
 			suggestionResponse.setPhoneNumberTutor(suggestions.get(i).getTutor().getUser().getPhonenumber());
 			suggestionResponse.setNameStudent(suggestions.get(i).getStudent().getUser().getName());
 			suggestionResponse.setPhoneNumberStudent(suggestions.get(i).getStudent().getUser().getPhonenumber());
-			suggestionResponse.setAvatar(suggestions.get(i).getTutor().getAvatar());
+			suggestionResponse.setAvatar(suggestions.get(i).getTutor().getUser().getAvatar());
 			suggestionResponse.setIdPost(suggestions.get(i).getPost().getId());
 			suggestionResponse.setTitlePost(suggestions.get(i).getPost().getTitle());
 			suggestionResponse.setStatus(suggestions.get(i).getStatus());

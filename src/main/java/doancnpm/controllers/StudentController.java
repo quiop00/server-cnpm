@@ -15,15 +15,25 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import doancnpm.converter.CommentConverter;
+import doancnpm.models.Comment;
 import doancnpm.models.Student;
+import doancnpm.models.TakenClass;
+import doancnpm.models.Tutor;
 import doancnpm.payload.request.StudentRequest;
+import doancnpm.payload.response.CommentOutput;
 import doancnpm.payload.response.StudentOutput;
+import doancnpm.payload.response.TakenClassResponse;
 import doancnpm.payload.response.TutorOutput;
+import doancnpm.repository.ClassRepository;
+import doancnpm.repository.CommentRepository;
+import doancnpm.repository.TutorRepository;
 import doancnpm.security.IStudentService;
 import doancnpm.security.jwt.JwtUtils;
 
@@ -33,16 +43,22 @@ import doancnpm.security.jwt.JwtUtils;
 public class StudentController {
 	@Autowired
 	private IStudentService studentService;
-
+	@Autowired
+	ClassRepository classRepository;
+	@Autowired
+	TutorRepository tutorRepository;
+	@Autowired
+	CommentRepository commentRepository;
+	
 	@Autowired
 	private JwtUtils jwtUtils;
-	
+
 	@GetMapping(value = "/student")
 	public Map<String, List<StudentOutput>> all() {
 		List<Student> students = studentService.all();
-		
+
 		List<StudentOutput> studentOutputs = new ArrayList<StudentOutput>();
-		for(int i=0;i<students.size();i++) {
+		for (int i = 0; i < students.size(); i++) {
 			StudentOutput studentOutput = new StudentOutput();
 			studentOutput.setId(students.get(i).getId());
 			studentOutput.setIdUser(students.get(i).getUser().getId());
@@ -50,10 +66,10 @@ public class StudentController {
 			studentOutput.setAge(students.get(i).getUser().getAge());
 			studentOutput.setPhonenumber(students.get(i).getUser().getPhonenumber());
 			studentOutput.setGender(students.get(i).getUser().getGender());
-			
+
 			studentOutputs.add(studentOutput);
 		}
-		
+
 		Map<String, List<StudentOutput>> response = new HashMap<String, List<StudentOutput>>();
 		response.put("students", studentOutputs);
 		return response;
@@ -61,15 +77,15 @@ public class StudentController {
 
 	@GetMapping("/api/student/profile")
 	@PreAuthorize("hasRole('STUDENT')")
-	public ResponseEntity<StudentOutput> getStudent(HttpServletRequest request){
+	public ResponseEntity<StudentOutput> getStudent(HttpServletRequest request) {
 		String jwt = parseJwt(request);
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
-		}	
-		
+		}
+
 		Student studentData = studentService.findStudent(username);
-		
+
 		StudentOutput studentOutput = new StudentOutput();
 		studentOutput.setId(studentData.getId());
 		studentOutput.setIdUser(studentData.getUser().getId());
@@ -77,14 +93,14 @@ public class StudentController {
 		studentOutput.setPhonenumber(studentData.getUser().getPhonenumber());
 		studentOutput.setAge(studentData.getUser().getAge());
 		studentOutput.setGender(studentData.getUser().getGender());
-		
+
 		if (studentData != null) {
 			return new ResponseEntity<>(studentOutput, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@GetMapping("/student/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT')")
 	public ResponseEntity<Student> getUserById(@PathVariable("id") long id) {
@@ -121,5 +137,5 @@ public class StudentController {
 		}
 		return null;
 	}
-	
+
 }

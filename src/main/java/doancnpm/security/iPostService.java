@@ -25,4 +25,5 @@ public interface iPostService {
 	
 	List<Post> findAll();
 	List<Post> findByIdStudent(long idStudent);
+	Boolean approvalPost(Boolean approval,Long id);
 }

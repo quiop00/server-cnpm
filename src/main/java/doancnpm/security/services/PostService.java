@@ -15,11 +15,14 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import doancnpm.converter.PostConverter;
+import doancnpm.enums.CandidateStatus;
 import doancnpm.models.Admin;
+import doancnpm.models.Candidate;
 import doancnpm.models.Grade;
 import doancnpm.models.Post;
 import doancnpm.models.Student;
 import doancnpm.models.Subject;
+import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.PostRequest;
 import doancnpm.repository.GradeRepository;
@@ -60,40 +63,13 @@ public class PostService implements iPostService {
 		Set<String> strSubject = postDTO.getSubject();
 		Set<Subject> subjects = new HashSet<>();
 		strSubject.forEach(subject -> {
-			switch (subject) {
-			case "Toán":
-				Subject toan = subjectRepository.findBysubjectname("Toán");
-					
-				subjects.add(toan);
-				break;
-			case "Tiếng Việt":
-				Subject tiengviet = subjectRepository.findBysubjectname("Tiếng Việt");
-				subjects.add(tiengviet);
-				break;	
-			case "Tiếng Anh":
-				Subject tienganh = subjectRepository.findBysubjectname("Tiếng Anh");
-				subjects.add(tienganh);
-				break;
-			case "Hóa":
-				Subject hoa = subjectRepository.findBysubjectname("Hóa");
-
-				subjects.add(hoa);
-				break;
-		
-			case "Lý":
-			Subject ly = subjectRepository.findBysubjectname("Lý");
-				
-			subjects.add(ly);
-			break;
-			case "Ngữ Văn":
-				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn");
-				subjects.add(nguvan);
-				break;
-			case "Lịch Sử":
-				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử");
-				subjects.add(lichsu);
-				break;	
+			Subject sbj = subjectRepository.findBysubjectname(subject);
+			if(sbj == null) {
+				sbj = new Subject();
+				sbj.setSubjectname(subject);
+				sbj = subjectRepository.save(sbj);
 			}
+			subjects.add(sbj);
 		});
 		User user = userRepository.findOneByusername(username);
 
@@ -102,7 +78,6 @@ public class PostService implements iPostService {
 
 		Map<String, Boolean> schedule = postDTO.getSchedules();
 		Post postEntity = new Post();
-
 		postEntity = postConverter.toEntity(postDTO);
 		postEntity.setStudent(oldStudent);
 		String jsonResp = "";
@@ -116,12 +91,11 @@ public class PostService implements iPostService {
 		}
 		
 		Grade grade = gradeRepository.findBygradename(postDTO.getGrade());
-//				.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
-		
-		
+//				.orElseThrow(() -> new RuntimeException("Error: Grade is not found."));	
 		postEntity.setSchedule(jsonResp);
 		postEntity.setGrade(grade);
 		postEntity.setSubjects(subjects);
+		postEntity.setStatus(postEntity.checkStatus());
 		postEntity = postRepository.save(postEntity);
 		postDTO = postConverter.toDTO(postEntity);
 	}
@@ -131,43 +105,13 @@ public class PostService implements iPostService {
 		Set<String> strSubject = postDTO.getSubject();
 		Set<Subject> subjects = new HashSet<>();
 		strSubject.forEach(subject -> {
-			switch (subject) {
-			case "Toán":
-				Subject toan = subjectRepository.findBysubjectname("Toán");
-						
-				subjects.add(toan);
-				break;
-			case "Tiếng anh":
-				Subject tienganh = subjectRepository.findBysubjectname("Tiếng anh");
-						
-				subjects.add(tienganh);
-				break;
-			case "Hóa":
-				Subject hoa = subjectRepository.findBysubjectname("Hóa");
-				
-
-				subjects.add(hoa);
-				break;
-		
-			case "Lý":
-			Subject ly = subjectRepository.findBysubjectname("Lý");
-			
-
-			subjects.add(ly);
-			break;
-			case "Ngữ Văn":
-				Subject nguvan = subjectRepository.findBysubjectname("Ngữ Văn");
-				
-
-				subjects.add(nguvan);
-				break;
-			case "Lịch Sử":
-				Subject lichsu = subjectRepository.findBysubjectname("Lịch Sử");
-			
-
-				subjects.add(lichsu);
-				break;	
+			Subject sbj = subjectRepository.findBysubjectname(subject);
+			if(sbj == null) {
+				sbj = new Subject();
+				sbj.setSubjectname(subject);
+				sbj = subjectRepository.save(sbj);
 			}
+			subjects.add(sbj);
 		});
 		
 		User user = userRepository.findOneByusername(username);
@@ -198,9 +142,7 @@ public class PostService implements iPostService {
 			e.printStackTrace();
 
 		}
-
 		postEntity.setSchedule(jsonResp);
-
 		postEntity = postRepository.save(postEntity);
 		postDTO = postConverter.toDTO(postEntity);
 	}
@@ -222,6 +164,15 @@ public class PostService implements iPostService {
 			results.add(postDTO);
 		}
 		return results;
+	}
+	@Override
+	public Boolean approvalPost(Boolean approval,Long id) {
+		Post post = postRepository.findOne(id);
+		if(post == null)
+			return false;
+		post.setVerify(approval);
+		postRepository.save(post);
+		return true;
 	}
 
 	@Override
@@ -252,6 +203,14 @@ public class PostService implements iPostService {
 		postRepository.delete(id);
 		
 	}
-
+	public static Tutor getAcceptTutor(Post post) {
+		if(post.getCandidates()!=null)
+			for(Candidate candidate:post.getCandidates()) {
+				if(candidate.getStatus()==CandidateStatus.WAITING) {
+					return candidate.getTutor();
+				}
+			}
+		return null;
+	}
 
 }

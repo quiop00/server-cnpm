@@ -6,35 +6,22 @@ import java.util.Set;
 
 public class PostRequest extends BaseRequest<PostRequest> {
 
-	private String student;
 	private String title;
 	private String description;
 	private Set<String> subject;
 	private String grade;
 	private String price;
-	private String phonenumber;
 	private String address;
-	private Long studentID;
+	private String finishDate;
 	private Map<String, Boolean> schedules;
-
-	public Long getStudentID() {
-		return studentID;
-	}
-
-	public void setStudentID(Long studentID) {
-		this.studentID = studentID;
-	}
-
 	
-
-	public String getStudent() {
-		return student;
+	public String getFinishDate() {
+		return finishDate;
 	}
 
-	public void setStudent(String student) {
-		this.student = student;
+	public void setFinishDate(String finishDate) {
+		this.finishDate = finishDate;
 	}
-
 
 	public Set<String> getSubject() {
 		return subject;
@@ -86,16 +73,6 @@ public class PostRequest extends BaseRequest<PostRequest> {
 
 	public void setPrice(String price) {
 		this.price = price;
-	}
-
-	
-
-	public String getPhonenumber() {
-		return phonenumber;
-	}
-
-	public void setPhonenumber(String phonenumber) {
-		this.phonenumber = phonenumber;
 	}
 
 	public String getAddress() {

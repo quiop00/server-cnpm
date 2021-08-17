@@ -1,6 +1,8 @@
 package doancnpm.models;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,11 +15,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -53,8 +57,6 @@ public class User {
 	@Column(name = "gender", nullable = true)
 	private Long gender;
 	
-	@Column(name = "verify")
-	private Boolean verify = false;
 	
 	@Column(name = "block")
 	private Boolean block = false;
@@ -62,10 +64,20 @@ public class User {
 	@Column(name = "avatar")
 	private String avatar;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY,cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+        })
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	@JsonIgnoreProperties("users")
 	private Set<Role> roles = new HashSet<>();
+	
+	@OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("user")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Notification> notifications;
+	
+
 	
 //	@OneToMany(mappedBy = "user")
 //	@JsonIgnoreProperties("user")
@@ -206,14 +218,6 @@ public class User {
 		this.gender = gender;
 	}
 
-	public Boolean getVerify() {
-		return verify;
-	}
-
-	public void setVerify(Boolean verify) {
-		this.verify = verify;
-	}
-
 	public Boolean getBlock() {
 		return block;
 	}
@@ -228,6 +232,34 @@ public class User {
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+	
+	public Boolean checkComplete() {
+		if(age != null && avatar !=null && !block && phonenumber !=null && name !=null )
+			return true;
+		return false;
+	}
+
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotification(List<Notification> notifications) {
+		this.notifications = notifications;
+	}
+	public Boolean checkRole(ERole role) {
+		if(roles == null)
+			return false;
+		for(Role r:roles) {
+			if(r.getName() == role)
+				return true;
+		}
+		return false;
+	}
+
+
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 	
 }

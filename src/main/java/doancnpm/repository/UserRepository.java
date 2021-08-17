@@ -1,5 +1,6 @@
 package doancnpm.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -22,6 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	Boolean existsByEmail(String email);
 	User findOneByusername(String username);
+	
 	
 //	@Modifying
 //	@Transactional

@@ -35,6 +35,10 @@ public class Subject {
 	@ManyToMany(mappedBy = "subjects")
 	@JsonIgnoreProperties("subjects")
 	private List<Post> posts = new ArrayList<>();
+	
+	@ManyToMany(mappedBy = "subjects")
+	@JsonIgnoreProperties("subjects")
+	private List<TakenClass> classes = new ArrayList<>();
 
 	public List<Post> getPosts() {
 		return posts;

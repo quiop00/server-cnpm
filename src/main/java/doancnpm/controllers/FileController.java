@@ -73,7 +73,7 @@ public class FileController {
 				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
         System.out.println(tutor.getId());
         //Tutor tutor = tutorRepository.findOne((long) 1);
-        tutor.setAvatar(fileName);
+        tutor.getUser().setAvatar(fileName);
         
         tutorRepository.save(tutor);
         

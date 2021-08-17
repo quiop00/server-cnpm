@@ -4,6 +4,8 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import doancnpm.enums.CandidateStatus;
+
 @Entity
 @Table(name = "candidates")
 public class Candidate {
@@ -19,8 +21,9 @@ public class Candidate {
 	@JoinColumn(name = "id_tutor")
 	private Tutor tutor;
 	
-	@Column(name = "status")
-	private Integer status;
+	@Enumerated(EnumType.STRING)
+	@Column
+	private CandidateStatus status;
 
 	public Long getId() {
 		return id;
@@ -46,12 +49,12 @@ public class Candidate {
 		this.tutor = tutor;
 	}
 
-	public Integer getStatus() {
+	public CandidateStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(CandidateStatus status) {
 		this.status = status;
 	}
-	
+
 }
