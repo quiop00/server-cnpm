@@ -98,6 +98,7 @@ public class Post  {
 	@JsonIgnoreProperties("posts")
 	private Set<Subject> subjects = new HashSet<>();
 	
+	
 	@ManyToOne
 	@JoinColumn(name = "studentId")
 	@JsonIgnoreProperties("post")

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Grade {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	
 	@Column(name = "gradename")
 	private String gradename;
@@ -41,16 +41,14 @@ public class Grade {
 	@JsonIgnoreProperties("grades")
 	private List<Tutor> tutors = new ArrayList<>();
 
-	public Integer getId() {
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-
-	
-	
 
 	public List<Post> getPosts() {
 		return posts;

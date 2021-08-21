@@ -369,7 +369,7 @@ public class PostController {
 		// Pageable paging = new PageRequest(page, size);
 		Grade lop = gradeRepository.findBygradename(grade);
 		// .orElseThrow(() -> new RuntimeException("Error: Grade is not found."));
-		int grade_id = 0;
+		long grade_id = 0;
 		if (lop != null) {
 			grade_id = lop.getId();
 		}
