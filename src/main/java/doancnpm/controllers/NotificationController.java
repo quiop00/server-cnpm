@@ -43,7 +43,7 @@ public class NotificationController {
 	PostRepository postRepository;
 	@Autowired
 	private INotificationService noticationService;
-	
+
 	private String parseJwt(HttpServletRequest request) {
 		String headerAuth = request.getHeader("Authorization");
 		if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {
@@ -51,6 +51,7 @@ public class NotificationController {
 		}
 		return null;
 	}
+
 	@PostMapping(value = "/api/notifications")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
 	public String createNotifications(HttpServletRequest request, @RequestBody NotificationRequest model) {
@@ -71,28 +72,28 @@ public class NotificationController {
 	}
 	
 	@GetMapping(value = "/api/notifications")
-	private Map<String, List<NotifyResponse>> getNotifications(HttpServletRequest request){
+	private Map<String, List<NotifyResponse>> getNotifications(HttpServletRequest request) {
 		String jwt = parseJwt(request);
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}
 		User user = userRepository.findOneByusername(username);
-		
+
 		List<Notification> notifications = user.getNotifications();
 		List<NotifyResponse> outs = new ArrayList<NotifyResponse>();
 		ERole userRole = null;
-		for(Role role:user.getRoles()) {
+		for (Role role : user.getRoles()) {
 			userRole = role.getName();
 			break;
 		}
-		if(notifications!=null) {
-			for(Notification notification:notifications) {
-				NotifyResponse out = NotificationConverter.modelToResponse(notification,userRole);
+		if (notifications != null) {
+			for (Notification notification : notifications) {
+				NotifyResponse out = NotificationConverter.modelToResponse(notification, userRole);
 				outs.add(out);
 			}
 		}
-		Map<String,List<NotifyResponse>> response = new HashMap<String, List<NotifyResponse>>();
+		Map<String, List<NotifyResponse>> response = new HashMap<String, List<NotifyResponse>>();
 		response.put("notificatons", outs);
 		return response;
 	}

@@ -64,6 +64,7 @@ import doancnpm.security.ITutorService;
 import doancnpm.security.IUserService;
 import doancnpm.security.iPostService;
 import doancnpm.security.jwt.JwtUtils;
+import doancnpm.security.services.NotificationService;
 
 @CrossOrigin
 @RestController
@@ -78,6 +79,8 @@ public class AdminController {
 	@Autowired
 	GradeRepository gradeRepository;
 
+	@Autowired
+	NotificationService notificationService;
 	@Autowired
 	UserRepository userRepository;
 	
@@ -157,7 +160,7 @@ public class AdminController {
 			TutorOutput tutorOutput = new TutorOutput();
 			tutorOutput = TutorConverter.modelToResponse(tutors.get(i));
 			/*
-			 *  only show cmnd phonenumber for admin
+			 * ---- only show cmnd phonenumber for admin-------
 			 */
 			tutorOutput.setCmnd(tutors.get(i).getCmnd());
 			tutorOutput.setPhonenumber(tutors.get(i).getUser().getPhonenumber());
@@ -224,7 +227,7 @@ public class AdminController {
 	}
 	
 	/*
-	 * ------------- Manage candidate ------------------
+	 * ------------------------- Manage candidate ----------------------------
 	 */
 	@GetMapping(value = "/admin/post/candidate")
 	@PreAuthorize("hasRole('ADMIN')")
@@ -242,7 +245,7 @@ public class AdminController {
 	}	
 
 	/*
-	 * -----------------------------------------------------
+	 * -----------------------------------------------------------------------
 	 */
 	
 	@PutMapping(value = "/admin/candidate")
@@ -269,24 +272,24 @@ public class AdminController {
 						System.out.println(post.getAddress()+"------------------------------------ABC----");
 						takenClass.setGrade(post.getGrade());
 						takenClass.setAddress(post.getAddress());
-						///////////////////////////////////////////
-						System.out.println("postSubjectkkkkkkkkkkkkkkkk" + post.getSubjects());
+
 						takenClass.setSubjects(post.getSubjects());
 						takenClasses.add(takenClass);
 						tutor.setClasses(takenClasses);
 						tutorRepository.save(tutor);
-						Notification toTutor = new Notification(tutor.getUser(), post,NotifyType.TUTOR_ACCEPT,(long) -1);
-						notificationRepo.save(toTutor);
-						Notification toStudent = new Notification(post.getStudent().getUser(), post,NotifyType.TUTOR_ACCEPT,(long) -1);
-						notificationRepo.save(toStudent);
+						
+						//notify to student & tutor
+						notificationService.pushNotification(post, tutor.getUser(),NotifyType.ACCEPT_OPEN_CLASS, (long) -1);
+						notificationService.pushNotification(post, post.getStudent().getUser(),NotifyType.ACCEPT_OPEN_CLASS,(long) -1);
+						
 					}
 					else {
 							Tutor tutor = candidate.getTutor();
 							candidate.setStatus(CandidateStatus.DENY);
-							Notification toTutor = new Notification(tutor.getUser(), post,NotifyType.TUTOR_DENY,(long) -1);
-							notificationRepo.save(toTutor);
-							Notification toStudent = new Notification(post.getStudent().getUser(), post,NotifyType.TUTOR_DENY,(long) -1);
-							notificationRepo.save(toStudent);
+							
+							//notify to student & tutor
+							notificationService.pushNotification(post, tutor.getUser(),NotifyType.REJECT_OPEN_CLASS, (long) -1);
+							notificationService.pushNotification(post, post.getStudent().getUser(),NotifyType.REJECT_OPEN_CLASS,(long) -1);
 						}
 				}else {
 					if(request.getApproval())

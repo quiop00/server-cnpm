@@ -14,6 +14,7 @@ public class TakenClassResponse {
 	private Set<String> subject;
 	private String address;
 	private String phonenumber;
+	private Boolean isRated;
 	private Map<String, Boolean> schedules;
 	private String status;
 	public Long getIdClass() {
@@ -64,6 +65,12 @@ public class TakenClassResponse {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public Boolean getIsRated() {
+		return isRated;
+	}
+	public void setIsRated(Boolean isRated) {
+		this.isRated = isRated;
 	}
 	
 }

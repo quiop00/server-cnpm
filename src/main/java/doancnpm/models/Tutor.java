@@ -83,6 +83,11 @@ public class Tutor implements Serializable {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<TakenClass> classes = new ArrayList<>();
 
+	@OneToMany(mappedBy = "tutor",orphanRemoval = true,cascade = CascadeType.ALL)
+	@JsonIgnoreProperties("tutor")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<Payment> payments = new ArrayList<Payment>();
+	
 	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("tutor")
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -96,6 +101,7 @@ public class Tutor implements Serializable {
 	@OneToMany(mappedBy = "tutor", cascade=CascadeType.REMOVE)
 	@JsonIgnoreProperties("tutor")
 	private List<Suggestion> suggestion = new ArrayList<>();
+	
 	
 	public String getCertificate() {
 		return certificate;
@@ -246,6 +252,14 @@ public class Tutor implements Serializable {
 
 	public void setClasses(List<TakenClass> classes) {
 		this.classes = classes;
+	}
+
+	public List<Payment> getPayments() {
+		return payments;
+	}
+
+	public void setPayments(List<Payment> payments) {
+		this.payments = payments;
 	}
 	
 }

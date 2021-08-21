@@ -97,6 +97,7 @@ public class PostConverter {
 			String schedules = post.getSchedule();
 			PostOut postOut = new PostOut();
 			postOut.setId(post.getId());
+			postOut.setStudentName(post.getStudent().getUser().getName());
 			postOut.setPhonenumber("Kết nối để xem");
 			postOut.setAddress("Kết nối để xem");
 			postOut.setGrade(post.getGrade().getGradename());

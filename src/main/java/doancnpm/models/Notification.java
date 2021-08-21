@@ -37,11 +37,9 @@ public class Notification {
 	@JoinColumn(name = "user_id")
 	@JsonIgnoreProperties("notification")
 	private User user;
-	
-	@ManyToOne
-	@JoinColumn(name = "post_id")
-	@JsonIgnoreProperties("notification")
-	private Post post;
+
+	@Column(name ="content")
+	private String content;
 	
 	@Enumerated(EnumType.STRING)
 	private NotifyType notifyType;
@@ -80,15 +78,6 @@ public class Notification {
 	public void setEndpoint(Long endpoint) {
 		this.endpoint = endpoint;
 	}
-
-	public Post getPost() {
-		return post;
-	}
-
-	public void setPost(Post post) {
-		this.post = post;
-	}
-
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -97,14 +86,16 @@ public class Notification {
 		this.createdDate = createdDate;
 	}
 
-	public Notification(User user, Post post, NotifyType notifyType, Long endpoint) {
-		this.user = user;
-		this.post = post;
-		this.notifyType = notifyType;
-		this.endpoint = endpoint;
-	}
 	public Notification() {
 		
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 	
 }

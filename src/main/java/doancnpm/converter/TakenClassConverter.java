@@ -18,6 +18,7 @@ public class TakenClassConverter {
 		response.setIdClass(takenClass.getId());
 		response.setAddress(takenClass.getAddress());
 		response.setGrade(takenClass.getGrade().getGradename());
+		response.setIsRated(takenClass.getIsRated());
 		Set<String> subjects = new HashSet<String>();
 		for (Subject subject : takenClass.getSubjects()) {
 			subjects.add(subject.getSubjectname());

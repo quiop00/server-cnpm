@@ -49,6 +49,9 @@ public class TakenClass {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private ClassStatus status = ClassStatus.TEACHING;
+	
+	@Column(name = "is_rated")
+	private Boolean isRated = false;
 
 	public Long getId() {
 		return id;
@@ -111,6 +114,14 @@ public class TakenClass {
 
 	public void setGrade(Grade grade) {
 		this.grade = grade;
+	}
+
+	public Boolean getIsRated() {
+		return isRated;
+	}
+
+	public void setIsRated(Boolean isRated) {
+		this.isRated = isRated;
 	}
 	
 
