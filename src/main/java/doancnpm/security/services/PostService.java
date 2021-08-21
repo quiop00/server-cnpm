@@ -63,14 +63,19 @@ public class PostService implements iPostService {
 		Set<String> strSubject = postDTO.getSubject();
 		Set<Subject> subjects = new HashSet<>();
 		strSubject.forEach(subject -> {
-			Subject sbj = subjectRepository.findBysubjectname(subject);
-			if(sbj == null) {
-				sbj = new Subject();
-				sbj.setSubjectname(subject);
-				sbj = subjectRepository.save(sbj);
-			}
-			subjects.add(sbj);
+				Subject sbj = subjectRepository.findBysubjectname(subject);	
+				subjects.add(sbj);
 		});
+//		Set<Subject> subjects = new HashSet<>();
+//		strSubject.forEach(subject -> {
+//			Subject sbj = subjectRepository.findBysubjectname(subject);
+//			if(sbj == null) {
+//				sbj = new Subject();
+//				sbj.setSubjectname(subject);
+//				sbj = subjectRepository.save(sbj);
+//			}
+//			subjects.add(sbj);
+//		});
 		User user = userRepository.findOneByusername(username);
 
 		Student oldStudent = studentRepository.findByuser_id(user.getId())

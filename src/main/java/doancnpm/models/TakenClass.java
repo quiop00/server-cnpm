@@ -81,7 +81,6 @@ public class TakenClass {
 	public void setStudent(Student student) {
 		this.student = student;
 	}
-
 	public Set<Subject> getSubjects() {
 		return subjects;
 	}

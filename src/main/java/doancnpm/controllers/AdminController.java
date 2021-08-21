@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +35,7 @@ import doancnpm.enums.NotifyType;
 import doancnpm.enums.PostStatus;
 import doancnpm.models.Candidate;
 import doancnpm.models.ERole;
+import doancnpm.models.Grade;
 import doancnpm.models.Notification;
 import doancnpm.models.Post;
 import doancnpm.models.Role;
@@ -42,12 +44,16 @@ import doancnpm.models.TakenClass;
 import doancnpm.models.Tutor;
 import doancnpm.models.User;
 import doancnpm.payload.request.ApprovalRequest;
+import doancnpm.payload.request.GradeRequest;
+import doancnpm.payload.request.PostRequest;
+import doancnpm.payload.request.SubjectRequest;
 import doancnpm.payload.request.UserRequest;
 import doancnpm.payload.response.AcceptionResponse;
 import doancnpm.payload.response.PostOut;
 import doancnpm.payload.response.TutorOutput;
 import doancnpm.payload.response.UserResponse;
 import doancnpm.repository.ClassRepository;
+import doancnpm.repository.GradeRepository;
 import doancnpm.repository.NotificationRepository;
 import doancnpm.repository.PostRepository;
 import doancnpm.repository.StudentRepository;
@@ -68,6 +74,9 @@ public class AdminController {
 
 	@Autowired
 	SubjectRepository subjectRepository;
+	
+	@Autowired
+	GradeRepository gradeRepository;
 
 	@Autowired
 	UserRepository userRepository;
@@ -261,6 +270,7 @@ public class AdminController {
 						takenClass.setGrade(post.getGrade());
 						takenClass.setAddress(post.getAddress());
 						///////////////////////////////////////////
+						System.out.println("postSubjectkkkkkkkkkkkkkkkk" + post.getSubjects());
 						takenClass.setSubjects(post.getSubjects());
 						takenClasses.add(takenClass);
 						tutor.setClasses(takenClasses);
@@ -333,7 +343,7 @@ public class AdminController {
 		Map<String, UserResponse> response = new HashMap<String, UserResponse>();
 		response.put("user",userOutput);
 		return response;
-}
+	}
 
 	@DeleteMapping(value = "/admin/user/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
@@ -349,4 +359,59 @@ public class AdminController {
 		return "Update user is success";
 	}
 	
-}
+	/* -------------------Manage subject -------------------*/
+	@PostMapping(value = "/admin/subject")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String createSubject(@RequestBody SubjectRequest model) {
+		Subject subject = new Subject();
+		subject.setSubjectname(model.getSubjectName());
+		
+		subjectRepository.save(subject);
+		String message = "Create subject is success !\n";
+		return message;
+	}
+	
+	@PutMapping(value = "/admin/subject/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String updateSubject(@RequestBody SubjectRequest model, @PathVariable("id") long id) {
+		Subject subject = subjectRepository.findOne(id);
+		subject.setSubjectname(model.getSubjectName());
+		subjectRepository.save(subject);
+		return "Update subject is success";
+	}
+	
+	@DeleteMapping(value = "/admin/subject/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public void delete(@PathVariable("id") long id) {
+		subjectRepository.delete(id);
+		System.out.println("Delete is successed");
+	}
+	/*---------------------------------------------------------*/
+	/* -------------------Manage grade -------------------*/
+	@PostMapping(value = "/admin/grade")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String createGrade(@RequestBody GradeRequest model) {
+		Grade grade = new Grade();
+		grade.setGradename(model.getGradeName());
+		gradeRepository.save(grade);
+		String message = "Create grade is success !\n";
+		return message;
+	}
+		
+	@PutMapping(value = "/admin/grade/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String updateGrade(@RequestBody GradeRequest model, @PathVariable("id") long id) {
+		Grade grade = gradeRepository.findOne(id);
+		grade.setGradename(model.getGradeName());
+		gradeRepository.save(grade);
+		return "Update grade is success";
+	}
+	
+	@DeleteMapping(value = "/admin/grade/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public void deleteGrade(@PathVariable("id") long id) {
+		gradeRepository.delete(id);
+		System.out.println("Delete is successed");
+	}
+}	
+	

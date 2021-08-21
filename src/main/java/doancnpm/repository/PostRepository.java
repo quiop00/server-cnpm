@@ -24,11 +24,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	
 	List<Post> findBySubjectsInAndAddressIn(List<Subject> subjects, String address);
 	
-	List<Post> findBySubjectsInAndGrade_idIn(List<Subject> subjects, int grade_id);
+	List<Post> findBySubjectsInAndGrade_idIn(List<Subject> subjects, Long grade_id);
 	
-	List<Post> findBySubjectsInAndGrade_idInAndAddressIn(List<Subject> subjects, int grade_id, String address);
+	List<Post> findBySubjectsInAndGrade_idInAndAddressIn(List<Subject> subjects, Long grade_id, String address);
 
-	List<Post> findByGrade_idInAndAddressIn(int grade_id, String address);
+	List<Post> findByGrade_idInAndAddressIn(Long grade_id, String address);
 
 	List<Post> findByStudent_id(long student_id);
 

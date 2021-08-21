@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Subject {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
 	@Column(name = "subjectname")
 	private String subjectname;
@@ -40,19 +40,12 @@ public class Subject {
 	@JsonIgnoreProperties("subjects")
 	private List<TakenClass> classes = new ArrayList<>();
 
-	public List<Post> getPosts() {
-		return posts;
-	}
 
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}
-
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -72,4 +65,22 @@ public class Subject {
 		this.tutors = tutors;
 	}
 
+	public List<TakenClass> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(List<TakenClass> classes) {
+		this.classes = classes;
+	}
+
+	public List<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
+	}
+	
+	
+	
 }
