@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import doancnpm.controllers.output.GradeOutput;
+import doancnpm.controllers.output.SubjectOutPut;
 import doancnpm.converter.AcceptionConverter;
 import doancnpm.converter.PostConverter;
 import doancnpm.converter.TutorConverter;
@@ -360,6 +362,22 @@ public class AdminController {
 	}
 	
 	/* -------------------Manage subject -------------------*/
+	@GetMapping(value = "/admin/subject")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Map<String, List<SubjectOutPut>> getSubject() {
+		List<Subject> subjects = subjectRepository.findAll();
+		List<SubjectOutPut> subjectOuts = new ArrayList<SubjectOutPut>();
+		for(int i=0; i<subjects.size();i++) {
+			SubjectOutPut subjectOut = new SubjectOutPut();
+			subjectOut.setId(subjects.get(i).getId());
+			subjectOut.setSubjectName(subjects.get(i).getSubjectname());
+			subjectOuts.add(subjectOut);
+		}
+		Map<String, List<SubjectOutPut>> response = new HashMap<String, List<SubjectOutPut>>();
+		response.put("subjects", subjectOuts);
+		return response;
+	}
+	
 	@PostMapping(value = "/admin/subject")
 	@PreAuthorize("hasRole('ADMIN')")
 	public String createSubject(@RequestBody SubjectRequest model) {
@@ -388,6 +406,22 @@ public class AdminController {
 	}
 	/*---------------------------------------------------------*/
 	/* -------------------Manage grade -------------------*/
+	@GetMapping(value = "/admin/grade")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Map<String, List<GradeOutput>> getGrade() {
+		List<Grade> grades = gradeRepository.findAll();
+		List<GradeOutput> gradeOuts = new ArrayList<GradeOutput>();
+		for(int i=0; i<grades.size();i++) {
+			GradeOutput gradeOut = new GradeOutput();
+			gradeOut.setId(grades.get(i).getId());
+			gradeOut.setGradeName(grades.get(i).getGradename());
+			gradeOuts.add(gradeOut);
+		}
+		Map<String, List<GradeOutput>> response = new HashMap<String, List<GradeOutput>>();
+		response.put("subjects", gradeOuts);
+		return response;
+	}
+	
 	@PostMapping(value = "/admin/grade")
 	@PreAuthorize("hasRole('ADMIN')")
 	public String createGrade(@RequestBody GradeRequest model) {
