@@ -35,98 +35,85 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class FileController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    @Autowired
-    private FileStorageService fileStorageService;
-    
-    @Autowired
+	@Autowired
+	private FileStorageService fileStorageService;
+
+	@Autowired
 	private ITutorService tutorService;
-    
-    @Autowired
-    private TutorRepository tutorRepository;
-    
-    @Autowired
+
+	@Autowired
+	private TutorRepository tutorRepository;
+
+	@Autowired
 	private JwtUtils jwtUtils;
-    
-    @Autowired
+
+	@Autowired
 	private UserRepository userRepository;
-    
-    @PostMapping("/uploadFile")
-    @Transactional
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-    public UploadFileResponse uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
-    	
-    	String jwt = parseJwt(request);
-    	String username ="";
+
+	@PostMapping("/uploadFile")
+	@Transactional
+	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
+	public UploadFileResponse uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
+
+		String jwt = parseJwt(request);
+		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}
-    	
+
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username"));
 
-			
-		
-        String fileName = fileStorageService.storeFile(file);
-        Tutor tutor = tutorRepository.findByuser_id(user.getId())
+		String fileName = fileStorageService.storeFile(file);
+		Tutor tutor = tutorRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
-        System.out.println(tutor.getId());
-        //Tutor tutor = tutorRepository.findOne((long) 1);
-        tutor.getUser().setAvatar(fileName);
-        
-        tutorRepository.save(tutor);
-        
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/downloadFile/")
-                .path(fileName)
-                .toUriString();
+		System.out.println(tutor.getId());
+		// Tutor tutor = tutorRepository.findOne((long) 1);
+		tutor.getUser().setAvatar(fileName);
 
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
-    }
+		tutorRepository.save(tutor);
 
-//    @PostMapping("/uploadMultipleFiles")
-//    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-//        return Arrays.asList(files)
-//                .stream()
-//                .map(file -> uploadFile(file))
-//                .collect(Collectors.toList());
-//    }
-    
-    @GetMapping("/downloadFile/{fileName:.+}")
-   // @PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-        // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/downloadFile/")
+				.path(fileName).toUriString();
 
-        // Try to determine file's content type
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            logger.info("Could not determine file type.");
-        }
+		return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+	}
 
-        // Fallback to the default content type if type could not be determined
-        if(contentType == null) {
-            contentType = "application/octet-stream";
-        }
+	@GetMapping("/downloadFile/{fileName:.+}")
+	// @PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR') or hasRole('STUDENT')")
+	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+		// Load file as Resource
+		Resource resource = fileStorageService.loadFileAsResource(fileName);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
-    }
-    private String parseJwt(HttpServletRequest request) {
+		// Try to determine file's content type
+		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+			logger.info("Could not determine file type.");
+		}
+
+		// Fallback to the default content type if type could not be determined
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
+	}
+
+	private String parseJwt(HttpServletRequest request) {
 		String headerAuth = request.getHeader("Authorization");
 
 //		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
 //			return headerAuth.substring(7, headerAuth.length());
 //		}
 		if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {
-        	return headerAuth.replace("Bearer ","");
-        }
+			return headerAuth.replace("Bearer ", "");
+		}
 		return null;
 	}
 }

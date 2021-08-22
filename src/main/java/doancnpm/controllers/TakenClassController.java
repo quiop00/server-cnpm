@@ -32,7 +32,9 @@ import doancnpm.repository.NotificationRepository;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.TutorRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.INotificationService;
 import doancnpm.security.jwt.JwtUtils;
+import doancnpm.security.services.NotificationService;
 
 @CrossOrigin
 @RestController
@@ -47,7 +49,8 @@ public class TakenClassController {
 	StudentRepository studentRepository;
 	@Autowired
 	NotificationRepository notificationRepo;
-
+	@Autowired
+	INotificationService notificationService;
 	@Autowired
 	private JwtUtils jwtUtils;
 
@@ -105,10 +108,11 @@ public class TakenClassController {
 
 		TakenClass takenClass = classRepository.findOne(idClass);
 		takenClass.setStatus(ClassStatus.FINISHED);
-		Notification toTutor = new Notification(takenClass.getTutor().getUser(),null,NotifyType.FINISH_CLASS,(long) -1);
-		notificationRepo.save(toTutor);
-		Notification toStudent = new Notification(takenClass.getStudent().getUser(),null,NotifyType.FINISH_CLASS,(long) takenClass.getTutor().getId());
-		notificationRepo.save(toStudent);
+		//notify to tutor
+		notificationService.pushNotification(null,takenClass.getTutor().getUser(),NotifyType.FINISH_CLASS,(long) -1);
+		//notify to student
+		notificationService.pushNotification(null,takenClass.getStudent().getUser(),NotifyType.FINISH_CLASS,(long) takenClass.getTutor().getId());
+
 		classRepository.save(takenClass);
 
 		Map<String, String> response = new HashMap<String, String>();

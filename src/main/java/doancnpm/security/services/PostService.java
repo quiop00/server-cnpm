@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import doancnpm.converter.PostConverter;
 import doancnpm.enums.CandidateStatus;
+import doancnpm.enums.PostStatus;
 import doancnpm.models.Admin;
 import doancnpm.models.Candidate;
 import doancnpm.models.Grade;
@@ -157,6 +158,9 @@ public class PostService implements iPostService {
 		User user = userRepository.findOneByusername(username);
 		Student student = studentRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
+		Post post = postRepository.findOne(id);
+		if(post.getStatus()==PostStatus.CHOOSING)
+			return;
 		postRepository.delete(id);
 	}
 

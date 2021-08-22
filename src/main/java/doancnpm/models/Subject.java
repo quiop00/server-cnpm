@@ -81,6 +81,4 @@ public class Subject {
 		this.posts = posts;
 	}
 	
-	
-	
 }

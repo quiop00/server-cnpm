@@ -25,16 +25,7 @@ public class Student {
 
 	@Column(name = "post_count")
 	private Integer postCount = 0;
-	
-	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade=CascadeType.REMOVE)
-	@JsonIgnoreProperties("student")
-	//@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Invitation> invitations = new ArrayList<>();
-	
-	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade=CascadeType.REMOVE)
-	@JsonIgnoreProperties("student")
-	//@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Rate> rates = new ArrayList<>();
+
 	
 	@OneToMany(mappedBy = "student", orphanRemoval = true, cascade=CascadeType.REMOVE)
 	@JsonIgnoreProperties("student")
@@ -73,14 +64,6 @@ public class Student {
 		this.post = post;
 	}
 
-	public List<Invitation> getInvitations() {
-		return invitations;
-	}
-
-	public void setInvitations(List<Invitation> invitations) {
-		this.invitations = invitations;
-	}
-
 	public Long getId() {
 		return id;
 	}
@@ -103,14 +86,6 @@ public class Student {
 
 	public void setPostCount(Integer postCount) {
 		this.postCount = postCount;
-	}
-
-	public List<Rate> getRates() {
-		return rates;
-	}
-
-	public void setRates(List<Rate> rates) {
-		this.rates = rates;
 	}
 
 	public List<TakenClass> getClasses() {

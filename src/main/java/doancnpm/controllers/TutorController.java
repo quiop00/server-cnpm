@@ -11,9 +11,12 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
@@ -35,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -217,13 +221,25 @@ public class TutorController {
 	 */
 	@PutMapping(value = "/api/tutor/profile")
 	@PreAuthorize("hasRole('TUTOR')")
-	public String updateTutor(HttpServletRequest request, @RequestBody AddTutorRequest model) {
+	public String updateTutor(HttpServletRequest request, @RequestPart("data") String data,
+			@RequestPart("cmnd") MultipartFile cmnd,
+			@RequestPart("avatar") MultipartFile avatar) {
 
 		String jwt = parseJwt(request);
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}	
+		AddTutorRequest model = null;
+		try {
+			model = new ObjectMapper().readValue(data, AddTutorRequest.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("----------------------ssss"+model.getAddress());
+		model.setAvatar(avatar);
+		model.setCmnd(cmnd);
 		tutorService.save(username, model);
 		String message = "Update tutor is success !\n";
 		return message;

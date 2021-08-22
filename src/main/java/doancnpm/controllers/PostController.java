@@ -46,14 +46,19 @@ import doancnpm.repository.AdminRepository;
 import doancnpm.repository.CandidateRepository;
 import doancnpm.repository.GradeRepository;
 import doancnpm.repository.NotificationRepository;
+import doancnpm.repository.PaymentRepository;
 import doancnpm.repository.PostRepository;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.SubjectRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.INotificationService;
+import doancnpm.security.IPaymentService;
 import doancnpm.security.ITutorService;
 import doancnpm.security.iPostService;
 import doancnpm.security.jwt.JwtUtils;
 import doancnpm.security.services.CandidateService;
+import doancnpm.security.services.NotificationService;
+import doancnpm.security.services.PaymentService;
 
 @CrossOrigin
 @RestController
@@ -71,7 +76,8 @@ public class PostController {
 	CandidateRepository candidateRepository;
 	@Autowired
 	NotificationRepository notificationRepo;
-	
+	@Autowired
+	IPaymentService paymentService;
 	@Autowired
 	private GradeRepository gradeRepository;
 	@Autowired
@@ -80,6 +86,8 @@ public class PostController {
 	StudentRepository studentRepository;
 	@Autowired
 	private iPostService postService;
+	@Autowired
+	INotificationService notificationService;
 	@Autowired
 	private ITutorService tutorService;
 
@@ -126,6 +134,8 @@ public class PostController {
 		for (int i = 0; i < posts.size(); i++) {
 			PostOut postOut = new PostOut();
 			postOut = PostConverter.modelToResponse(posts.get(i));
+			postOut.setPhonenumber(student.getUser().getPhonenumber());
+			postOut.setAddress(posts.get(i).getAddress());
 			postOuts.add(postOut);
 		}
 
@@ -271,14 +281,20 @@ public class PostController {
 			candidate.setStatus(CandidateStatus.WAITING);
 			post.setStatus(PostStatus.CHOOSING);
 			candidateRepository.save(candidate);
-			Notification toTutor = new Notification(candidate.getTutor().getUser(), post,NotifyType.STUDENT_ACCEPT,post.getId());
-			notificationRepo.save(toTutor);
+			
+			paymentService.createBill(candidate.getTutor(), post,Double.parseDouble(post.getPrice())*0.1+"f");
+			
+			notificationService.pushNotification(post, candidate.getTutor().getUser(),NotifyType.REQUEST_TO_PAY, (long) -1);
+			//Notification toTutor = new Notification(candidate.getTutor().getUser(), post,NotifyType.STUDENT_ACCEPT,post.getId());
+			//notificationRepo.save(toTutor);
+			
 			List<Admin> admins = adminRepository.findAll();
 			System.out.println("herer "+admins.size());
 			if(admins != null)
 				for(Admin admin: admins) {
-					Notification toAdmin = new Notification(admin.getUser(), post,NotifyType.STUDENT_ACCEPT,post.getId());
-					notificationRepo.save(toAdmin);
+					//Notification toAdmin = new Notification(admin.getUser(), post,NotifyType.STUDENT_ACCEPT,post.getId());
+					//notificationRepo.save(toAdmin);
+					notificationService.pushNotification(post, admin.getUser(),NotifyType.REQUEST_OPEN_CLASS, post.getId());
 				}
 			
 			postRepository.save(post);

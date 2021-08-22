@@ -43,7 +43,7 @@ public class NotificationController {
 	PostRepository postRepository;
 	@Autowired
 	private INotificationService noticationService;
-	
+
 	private String parseJwt(HttpServletRequest request) {
 		String headerAuth = request.getHeader("Authorization");
 		if (StringUtils.hasLength(headerAuth) && headerAuth.startsWith("Bearer ")) {
@@ -51,48 +51,27 @@ public class NotificationController {
 		}
 		return null;
 	}
-	@PostMapping(value = "/api/notifications")
-	@PreAuthorize("hasRole('ADMIN') or hasRole('TUTOR')")
-	public String createNotifications(HttpServletRequest request, @RequestBody NotificationRequest model) {
-
-		String jwt = parseJwt(request);
-		String username = "";
-		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-			username = jwtUtils.getUserNameFromJwtToken(jwt);
-		}
-		
-		User user = userRepository.findOneByusername(username);
-		Post post = postRepository.findOne(model.getIdPost());
-		NotifyType type = model.getNotifyType();
-		Long endpoint = model.getEndpoint();
-		noticationService.pushNotification(post, user, type, endpoint);
-		String message = "Create Post is success !\n";
-		return message;
-	}
 	
 	@GetMapping(value = "/api/notifications")
-	private Map<String, List<NotifyResponse>> getNotifications(HttpServletRequest request){
+	private Map<String, List<NotifyResponse>> getNotifications(HttpServletRequest request) {
 		String jwt = parseJwt(request);
 		String username = "";
 		if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+			System.out.println("h");
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}
 		User user = userRepository.findOneByusername(username);
-		
+
 		List<Notification> notifications = user.getNotifications();
 		List<NotifyResponse> outs = new ArrayList<NotifyResponse>();
-		ERole userRole = null;
-		for(Role role:user.getRoles()) {
-			userRole = role.getName();
-			break;
-		}
-		if(notifications!=null) {
-			for(Notification notification:notifications) {
-				NotifyResponse out = NotificationConverter.modelToResponse(notification,userRole);
+		System.out.println(notifications.size());
+		if (notifications != null) {
+			for (Notification notification : notifications) {
+				NotifyResponse out = NotificationConverter.modelToResponse(notification);
 				outs.add(out);
 			}
 		}
-		Map<String,List<NotifyResponse>> response = new HashMap<String, List<NotifyResponse>>();
+		Map<String, List<NotifyResponse>> response = new HashMap<String, List<NotifyResponse>>();
 		response.put("notificatons", outs);
 		return response;
 	}

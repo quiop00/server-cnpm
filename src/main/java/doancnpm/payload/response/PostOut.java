@@ -10,6 +10,7 @@ import doancnpm.models.Candidate;
 public class PostOut {
 	private Long id;
 	private Long idStudent;
+	private String studentName;
 	private String title;
 	@JsonIgnoreProperties("tutors")
 	private String grade;
@@ -135,6 +136,14 @@ public class PostOut {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getStudentName() {
+		return studentName;
+	}
+
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
 	}
 	
 }
