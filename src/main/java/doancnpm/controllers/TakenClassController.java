@@ -32,6 +32,7 @@ import doancnpm.repository.NotificationRepository;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.TutorRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.INotificationService;
 import doancnpm.security.jwt.JwtUtils;
 import doancnpm.security.services.NotificationService;
 
@@ -49,7 +50,7 @@ public class TakenClassController {
 	@Autowired
 	NotificationRepository notificationRepo;
 	@Autowired
-	NotificationService notificationService;
+	INotificationService notificationService;
 	@Autowired
 	private JwtUtils jwtUtils;
 

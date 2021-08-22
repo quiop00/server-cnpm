@@ -244,7 +244,7 @@ public class User {
 		return notifications;
 	}
 
-	public void setNotification(List<Notification> notifications) {
+	public void setNotifications(List<Notification> notifications) {
 		this.notifications = notifications;
 	}
 	public Boolean checkRole(ERole role) {
@@ -257,9 +257,5 @@ public class User {
 		return false;
 	}
 
-
-	public void setNotifications(List<Notification> notifications) {
-		this.notifications = notifications;
-	}
 	
 }

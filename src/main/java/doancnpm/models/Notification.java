@@ -35,7 +35,7 @@ public class Notification {
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	@JsonIgnoreProperties("notification")
+	@JsonIgnoreProperties("notifications")
 	private User user;
 
 	@Column(name ="content")

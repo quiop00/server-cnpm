@@ -6,6 +6,7 @@ public class PaymentResponse {
 	private String createdDate;
 	private String description;
 	private String status;
+	private Long idPost;
 	public Long getBillId() {
 		return billId;
 	}
@@ -35,6 +36,12 @@ public class PaymentResponse {
 	}
 	public void setCost(String cost) {
 		this.cost = cost;
+	}
+	public Long getIdPost() {
+		return idPost;
+	}
+	public void setIdPost(Long idPost) {
+		this.idPost = idPost;
 	}
 	
 	

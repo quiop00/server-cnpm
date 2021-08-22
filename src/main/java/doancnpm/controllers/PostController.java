@@ -51,6 +51,8 @@ import doancnpm.repository.PostRepository;
 import doancnpm.repository.StudentRepository;
 import doancnpm.repository.SubjectRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.INotificationService;
+import doancnpm.security.IPaymentService;
 import doancnpm.security.ITutorService;
 import doancnpm.security.iPostService;
 import doancnpm.security.jwt.JwtUtils;
@@ -75,7 +77,7 @@ public class PostController {
 	@Autowired
 	NotificationRepository notificationRepo;
 	@Autowired
-	PaymentService paymentService;
+	IPaymentService paymentService;
 	@Autowired
 	private GradeRepository gradeRepository;
 	@Autowired
@@ -85,7 +87,7 @@ public class PostController {
 	@Autowired
 	private iPostService postService;
 	@Autowired
-	NotificationService notificationService;
+	INotificationService notificationService;
 	@Autowired
 	private ITutorService tutorService;
 

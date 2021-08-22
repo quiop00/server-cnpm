@@ -20,6 +20,7 @@ public class PaymentService implements IPaymentService{
 		
 		Payment payment = new Payment();
 		
+		payment.setPostId(post.getId());
 		payment.setTutor(tutor);
 		payment.setAmount(cost);
 		payment.setDescription("Hóa đơn thu phí nhận lớp '"+post.getTitle()+"'");

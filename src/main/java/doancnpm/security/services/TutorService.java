@@ -28,11 +28,11 @@ import doancnpm.repository.GradeRepository;
 import doancnpm.repository.SubjectRepository;
 import doancnpm.repository.TutorRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.IImageService;
 import doancnpm.security.ITutorService;
 
 @Service
 public class TutorService implements ITutorService {
-
 
 	@Autowired
 	private TutorRepository tutorRepository;
@@ -42,12 +42,13 @@ public class TutorService implements ITutorService {
 	private SubjectRepository subjectRepository;
 
 	@Autowired
+	IImageService imageService;
+	@Autowired
 	UserRepository userRepository;
 
 	@Autowired
 	private TutorConverter tutorConverter;
 
-	
 	@Override
 	public List<Tutor> findAll() {
 		return tutorRepository.findAll();
@@ -59,25 +60,24 @@ public class TutorService implements ITutorService {
 		return tutorRepository.findOne(id);
 	}
 
-	
 	@Override
 	public void save(String username, AddTutorRequest addTutorRequest) {
-		
+
 		User user = userRepository.findOneByusername(username);
-		
+
 		Set<String> strSubject = addTutorRequest.getSubject();
 		Set<Subject> subjects = new HashSet<>();
 		strSubject.forEach(subject -> {
-				Subject sbj = subjectRepository.findBysubjectname(subject);	
-				subjects.add(sbj);
+			Subject sbj = subjectRepository.findBysubjectname(subject);
+			subjects.add(sbj);
 		});
 
 		Set<String> strGrade = addTutorRequest.getGrade();
 		Set<Grade> grades = new HashSet<>();
 
 		strGrade.forEach(grade -> {
-				Grade lop = gradeRepository.findBygradename(grade);
-				grades.add(lop);
+			Grade lop = gradeRepository.findBygradename(grade);
+			grades.add(lop);
 		});
 
 		Map<String, Boolean> schedule = addTutorRequest.getSchedules();
@@ -85,9 +85,25 @@ public class TutorService implements ITutorService {
 		Tutor tutor = new Tutor();
 		Tutor oldTutor = tutorRepository.findByuser_id(user.getId())
 				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
-		
+
 		tutor = tutorConverter.toTutor(addTutorRequest, oldTutor);
-		
+
+		// save avatar, cmnd
+		try {
+			String avatarName = imageService.save(addTutorRequest.getAvatar());
+			String avatarUrl = imageService.getImageUrl(avatarName);
+			String cmndName = imageService.save(addTutorRequest.getCmnd());
+			String cmndUrl = imageService.getImageUrl(cmndName);
+
+			user.setAvatar(avatarUrl);
+			tutor.setCmnd(cmndUrl);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			user.setAvatar("");
+			tutor.setCmnd("");
+		}
+
 		tutor.setGrades(grades);
 		tutor.setSubjects(subjects);
 
@@ -101,18 +117,17 @@ public class TutorService implements ITutorService {
 			e.printStackTrace();
 
 		}
-		
+
 		tutor.setSchedule(jsonResp);
 		tutor.setUser(user);
 
-		
 		user.setName(addTutorRequest.getName());
 		user.setAge(addTutorRequest.getAge());
-		user.setPhonenumber(addTutorRequest.getPhonenumber());
+
 		user.setGender(addTutorRequest.getGender());
-		
+
 		userRepository.save(user);
-		
+
 		tutor = tutorRepository.save(tutor);
 	}
 
@@ -123,6 +138,7 @@ public class TutorService implements ITutorService {
 		}
 
 	}
+
 	@Override
 	public List<Tutor> findAllPage(Pageable pageable) {
 		return tutorRepository.findAll(pageable).getContent();
@@ -141,21 +157,21 @@ public class TutorService implements ITutorService {
 				.orElseThrow(() -> new UsernameNotFoundException("Tutor Not Found"));
 		return tutor;
 	}
+
 	@Override
 	public List<Tutor> getTutorsByVerify(Boolean verify) {
-		List<Tutor> tutors = tutorRepository.findByVerify(verify); 
+		List<Tutor> tutors = tutorRepository.findByVerify(verify);
 		return tutors;
 	}
 
 	@Override
-	public Boolean approvalTutor(Boolean approval,Long id) {
+	public Boolean approvalTutor(Boolean approval, Long id) {
 		Tutor tutor = tutorRepository.findOne(id);
-		if(tutor == null)
+		if (tutor == null)
 			return false;
 		tutor.setVerify(approval);
 		tutorRepository.save(tutor);
 		return true;
 	}
-	
 
 }

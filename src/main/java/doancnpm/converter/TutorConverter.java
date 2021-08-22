@@ -24,7 +24,6 @@ public class TutorConverter {
 		tutor.setAddress(addTutorRequest.getAddress());
 		tutor.setDescription(addTutorRequest.getDescription());
 		tutor.setQualification(addTutorRequest.getQualification());
-		tutor.setCmnd(addTutorRequest.getCmnd());
 		tutor.setCertificate(addTutorRequest.getCertificate());
 		return tutor;
 	}
@@ -33,7 +32,6 @@ public class TutorConverter {
 		tutor.setAddress(addTutorRequest.getAddress());
 		tutor.setDescription(addTutorRequest.getDescription());
 		tutor.setQualification(addTutorRequest.getQualification());
-		tutor.setCmnd(addTutorRequest.getCmnd());
 		tutor.setCertificate(addTutorRequest.getCertificate());
 		return tutor;
 	}

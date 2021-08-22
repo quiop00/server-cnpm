@@ -35,6 +35,7 @@ public class PostConverter {
 		entity.setPrice(dto.getPrice());
 		entity.setAddress(dto.getAddress());
 		Date date = null;
+		if(dto.getFinishDate()!=null)
 		try {
 			SimpleDateFormat formatter=new SimpleDateFormat("dd-MM-yyyy");  
 			date = formatter.parse(dto.getFinishDate());

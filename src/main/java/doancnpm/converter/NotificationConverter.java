@@ -7,7 +7,7 @@ import doancnpm.payload.response.NotifyResponse;
 import doancnpm.security.services.PostService;
 
 public class NotificationConverter {
-	public static NotifyResponse modelToResponse(Notification notification,ERole role) {
+	public static NotifyResponse modelToResponse(Notification notification) {
 		NotifyResponse out = new NotifyResponse();
 		out.setEndpoint(notification.getEndpoint());
 		out.setType(notification.getNotifyType().name());

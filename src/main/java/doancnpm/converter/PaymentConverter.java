@@ -6,7 +6,7 @@ import doancnpm.payload.response.PaymentResponse;
 public class PaymentConverter {
 	public static PaymentResponse modelToResponse(Payment payment) {
 		PaymentResponse bill = new PaymentResponse();
-		
+		bill.setIdPost(payment.getPostId());
 		bill.setBillId(payment.getId());
 		bill.setCost(payment.getAmount());
 		bill.setDescription(payment.getDescription());

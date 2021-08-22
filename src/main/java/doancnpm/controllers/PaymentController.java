@@ -29,7 +29,11 @@ import doancnpm.payload.response.PaymentResponse;
 import doancnpm.repository.PaymentRepository;
 import doancnpm.repository.TutorRepository;
 import doancnpm.repository.UserRepository;
+import doancnpm.security.ICandidateService;
+import doancnpm.security.INotificationService;
+import doancnpm.security.IPaymentService;
 import doancnpm.security.jwt.JwtUtils;
+import doancnpm.security.services.CandidateService;
 import doancnpm.security.services.NotificationService;
 import doancnpm.security.services.PaymentService;
 
@@ -40,7 +44,7 @@ public class PaymentController {
 	PaymentRepository paymentRepository;
 	
 	@Autowired
-	PaymentService paymentService;
+	IPaymentService paymentService;
 	
 	@Autowired
 	TutorRepository tutorRepository;
@@ -49,7 +53,10 @@ public class PaymentController {
 	UserRepository userRepository;
 	
 	@Autowired
-	NotificationService notificationService;
+	ICandidateService candidateService;
+	
+	@Autowired
+	INotificationService notificationService;
 	
 	@Autowired
 	JwtUtils jwtUtils;
@@ -77,6 +84,9 @@ public class PaymentController {
 		notificationService.pushNotification(null, tutor.getUser(), NotifyType.PAYMENT_SUCCESS, (long)-1);
 		
 		//-------------------------------------------------
+		
+		//OPEN CLASS AUTOMATIC
+		candidateService.openClass(paymentInfo.getPostId(), true);
 		
 		Map<String,String> response =new HashMap<String, String>();
 		response.put("message", "Thanh toán thành công");

@@ -1,5 +1,8 @@
 package doancnpm.security.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,7 +27,6 @@ public class NotificationService implements INotificationService{
 	NotificationRepository notificationRepo;
 	@Override
 
-	
 	public void pushNotification(Post post, User user, NotifyType type,Long endpoint) {
 		Notification notification = new Notification();
 		notification.setEndpoint(endpoint);
@@ -37,7 +39,14 @@ public class NotificationService implements INotificationService{
 		}
 		notification.setContent(setContent(post, type, userRole));
 		
-		notificationRepo.save(notification);
+		//notificationRepo.save(notification);
+		List<Notification> notifications = user.getNotifications();
+		if(notifications==null) {
+			notifications = new ArrayList<Notification>();
+		}
+		notifications.add(notification);
+		user.setNotifications(notifications);
+		userRepository.save(user);
 		
 	}
 	public static String setContent(Post post,NotifyType type,ERole role) {

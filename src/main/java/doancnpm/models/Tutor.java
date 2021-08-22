@@ -88,15 +88,6 @@ public class Tutor implements Serializable {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Payment> payments = new ArrayList<Payment>();
 	
-	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("tutor")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Invitation> invitations = new ArrayList<>();
-	
-	@OneToMany(mappedBy = "tutor", orphanRemoval = true, cascade = CascadeType.ALL)
-	@JsonIgnoreProperties("tutor")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Rate> rates = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "tutor", cascade=CascadeType.REMOVE)
 	@JsonIgnoreProperties("tutor")
@@ -117,14 +108,6 @@ public class Tutor implements Serializable {
 
 	public void setCmnd(String cmnd) {
 		this.cmnd = cmnd;
-	}
-
-	public List<Rate> getRates() {
-		return rates;
-	}
-
-	public void setRates(List<Rate> rates) {
-		this.rates = rates;
 	}
 
 	@Column(name="schedule")
@@ -209,14 +192,6 @@ public class Tutor implements Serializable {
 
 	public void setSchedule(String schedule) {
 		this.schedule = schedule;
-	}
-
-	public List<Invitation> getInvitations() {
-		return invitations;
-	}
-
-	public void setInvitations(List<Invitation> invitations) {
-		this.invitations = invitations;
 	}
 
 	public List<Suggestion> getSuggestion() {

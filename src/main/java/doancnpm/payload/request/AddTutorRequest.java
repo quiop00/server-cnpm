@@ -3,32 +3,26 @@ package doancnpm.payload.request;
 
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 import java.util.Set;
 
 public class AddTutorRequest {
-	private String phonenumber;
+
 	private Long age;
 	private String name;
 	private Long gender;
 	private String qualification;
 	private String certificate;
-	private String cmnd;
+	private MultipartFile avatar;
+	private MultipartFile cmnd;
 	private String description;
 	private Set<String> subject;
 	private Set<String> grade;
 	private String address;
 	private Map<String,Boolean> schedules;
 	
-	
-	
-	public String getPhonenumber() {
-		return phonenumber;
-	}
-	public void setPhonenumber(String phonenumber) {
-		this.phonenumber = phonenumber;
-	}
 	public Long getAge() {
 		return age;
 	}
@@ -93,11 +87,18 @@ public class AddTutorRequest {
 	public void setCertificate(String certificate) {
 		this.certificate = certificate;
 	}
-	public String getCmnd() {
+	public MultipartFile getCmnd() {
 		return cmnd;
 	}
-	public void setCmnd(String cmnd) {
+	public void setCmnd(MultipartFile cmnd) {
 		this.cmnd = cmnd;
 	}
+	public MultipartFile getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(MultipartFile avatar) {
+		this.avatar = avatar;
+	}
+	
 	
 }

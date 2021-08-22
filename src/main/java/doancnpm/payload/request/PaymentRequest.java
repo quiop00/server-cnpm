@@ -4,7 +4,7 @@ public class PaymentRequest {
 	private Long idBill;
 	private String payer;
 	private String incoming;
-
+	private Long idPost;
 	public String getIncoming() {
 		return incoming;
 	}
@@ -22,6 +22,12 @@ public class PaymentRequest {
 	}
 	public void setIdBill(Long idBill) {
 		this.idBill = idBill;
+	}
+	public Long getIdPost() {
+		return idPost;
+	}
+	public void setIdPost(Long idPost) {
+		this.idPost = idPost;
 	}
 	
 	
