@@ -68,8 +68,8 @@ public class CandidateService implements ICandidateService{
 						takenClass.setTutor(candidate.getTutor());
 						takenClass.setGrade(post.getGrade());
 						takenClass.setAddress(post.getAddress());
-
 						takenClass.setSubjects(post.getSubjects());
+						System.out.println("kkkkkkkkkkkkkkkkkk" + post.getSubjects());
 						takenClasses.add(takenClass);
 						tutor.setClasses(takenClasses);
 						tutorRepository.save(tutor);
