@@ -66,7 +66,7 @@ public class PostConverter {
 		dto.setAddress(entity.getAddress());
 		dto.setCreatedDate(entity.getCreatedDate());
 		dto.setModifiedDate(entity.getModifiedDate());
-
+		
 		return dto;
 	}
 
@@ -99,6 +99,7 @@ public class PostConverter {
 			PostOut postOut = new PostOut();
 			postOut.setId(post.getId());
 			postOut.setStudentName(post.getStudent().getUser().getName());
+			postOut.setVerify(post.getVerify());
 			postOut.setPhonenumber("Kết nối để xem");
 			postOut.setAddress("Kết nối để xem");
 			postOut.setGrade(post.getGrade().getGradename());

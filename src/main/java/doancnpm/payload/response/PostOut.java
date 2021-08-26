@@ -25,6 +25,16 @@ public class PostOut {
 	private String finishDate;
 	private Boolean isExpire;
 	private String status;
+	private Boolean verify;
+	
+	public Boolean getVerify() {
+		return verify;
+	}
+
+	public void setVerify(Boolean verify) {
+		this.verify = verify;
+	}
+
 	public Long getIdStudent() {
 		return idStudent;
 	}
