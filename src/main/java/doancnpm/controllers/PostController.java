@@ -322,18 +322,20 @@ public class PostController {
 		List<Post> post1 = new ArrayList<Post>();
 		List<Post> post2 = new ArrayList<Post>();
 		List<Post> post3 = new ArrayList<Post>();
-
+		List<Post> post4 = new ArrayList<Post>();
+		
 		for (int i = 0; i < post.size(); i++)
 			if (tutor.getSubjects().containsAll(post.get(i).getSubjects()) == true
 					&& tutor.getGrades().contains(post.get(i).getGrade()) == true)
 				post1.add(post.get(i));
-			else if ((tutor.getSubjects().containsAll(post.get(i).getSubjects()) == true
+			else if (tutor.getSubjects().containsAll(post.get(i).getSubjects()) == true
 					&& tutor.getGrades().contains(post.get(i).getGrade()) == false)
-					|| (tutor.getSubjects().containsAll(post.get(i).getSubjects()) == false
-							&& tutor.getGrades().contains(post.get(i).getGrade()) == true))
 				post2.add(post.get(i));
-			else
+			else if (tutor.getSubjects().containsAll(post.get(i).getSubjects()) == false
+					&& tutor.getGrades().contains(post.get(i).getGrade()) == true)
 				post3.add(post.get(i));
+			else
+				post4.add(post.get(i));
 
 		List<Post> recommendPost = new ArrayList<Post>();
 		for (int i = 0; i < post1.size(); i++)
@@ -342,7 +344,9 @@ public class PostController {
 			recommendPost.add(post2.get(j));
 		for (int k = 0; k < post3.size(); k++)
 			recommendPost.add(post3.get(k));
-
+		for (int k = 0; k < post4.size(); k++)
+			recommendPost.add(post4.get(k));
+		
 		List<PostOut> postOuts = new ArrayList<PostOut>();
 		for (int i = 0; i < recommendPost.size(); i++) {
 			String schedules = recommendPost.get(i).getSchedule();
